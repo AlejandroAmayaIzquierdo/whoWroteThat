@@ -1,7 +1,6 @@
 ﻿import express from "express";
 import { AuthManager } from "../database/AuthManager.js";
 import { logInController, signupController } from "../controllers/userController.js";
-import { getUser } from "../services/userServices.js";
 
 const userRoute = express.Router();
 

@@ -5,6 +5,8 @@ import { createSession, createUser, getUser } from "../services/userServices.js"
 export const signupController =  async (req: Request, res: Response): Promise<Lucia.Session> => {
     try {
         const { userName, password } = req.body as unknown as Api.RegisterUserBody;
+
+        console.log(userName,password);
     
         if (typeof userName !== "string" || userName.length < 4 || userName.length > 31)
             throw { message: "Invalid username", code: 400 };
@@ -12,11 +14,13 @@ export const signupController =  async (req: Request, res: Response): Promise<Lu
             throw { message: "Invalid password", code: 400 };
 
         const user = await createUser('id',userName,password);
+        console.log(user);
         const session = await createSession(user.userId);
         if(!session)
             throw { message: "Error while creating the session", code: 402 };
         return session;
     } catch (error) {
+        console.log(error);
         throw { message: error, code: 500 };
     }
 

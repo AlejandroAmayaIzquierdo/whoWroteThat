@@ -10,31 +10,31 @@ export class SocketHandler {
         io.on('connection', async (socket) => {
             await this.handleAuth(socket);
 
-            socket.on('joinRoom', async (roomID: number) => {
-                const token = socket.request.headers.authorization;
-                if(!token) {this.disconnectUser(socket); return;}
-                const session = await AuthManager.getInstance().getAuth()?.validateSession(token) as Lucia.Session;
-                RoomManager.joinRoom(socket,roomID,session.user.userId);
+            socket.on('joinRoom', async (data: Api.JoinRoomData) => {
+                RoomManager.joinRoom(socket,data.roomID,data.userId);
             });
 
-            socket.on('onClick', async (data: {roomID: number,rowIndex: number,columnIndex: number}) => {
-                console.log('Clicket at ' + data.rowIndex + " " + data.columnIndex);
-                const token = socket.request.headers.authorization;
-                if(!token) {this.disconnectUser(socket); return;}
-                RoomManager.onClick(data.roomID,data.rowIndex,data.columnIndex);
+            socket.on('onSendMessage', async (data: Api.messageData) => {
+                // console.log('Clicket at ' + data.rowIndex + " " + data.columnIndex);
+                // const token = socket.request.headers.authorization;
+                // if(!token) {this.disconnectUser(socket); return;}
+                // RoomManager.onClick(data.roomID,data.rowIndex,data.columnIndex);
+            });
+
+            socket.on('onSendVote', async (data: unknown) => {
             });
 
             socket.on('disconnect',async() => {
-                const token = socket.request.headers.authorization;
-                if(!token)  return;
-                const session = await AuthManager.getInstance().getAuth()?.validateSession(token) as Lucia.Session;
+                // const token = socket.request.headers.authorization;
+                // if(!token)  return;
+                // const session = await AuthManager.getInstance().getAuth()?.validateSession(token) as Lucia.Session;
                 console.log("User Disconnected");
-                const isUserOnRoom = RoomManager.isUserOnAnyRoom(session.user.userId);
+                // const isUserOnRoom = RoomManager.isUserOnAnyRoom(session.user.userId);
 
-                if(isUserOnRoom){
-                    Application.io.to(isUserOnRoom.getID()).emit('disconnectedUser', null);
-                    isUserOnRoom.done();
-                }
+                // if(isUserOnRoom){
+                //     Application.io.to(isUserOnRoom.getID()).emit('disconnectedUser', null);
+                //     isUserOnRoom.done();
+                // }
             });
         });
     }

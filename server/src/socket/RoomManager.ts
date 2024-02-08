@@ -51,12 +51,6 @@ export class RoomManager {
         }
     }
 
-    public static onClick = async (roomID: number,rowIndex: number,columnIndex: number) => {
-        const room = this.rooms.find(e => e.getID() === roomID + "");
-        room?.getGame().click(rowIndex,columnIndex);
-
-    }
-
     private static createRoom = async (socket: socketIO,roomID: number,userID: string,maxUsers: number) => {
         console.log('CreatingRoom')
         const room = new Room(roomID,maxUsers);

@@ -20,6 +20,22 @@ declare namespace App {
 		is_active: number;
 		lastEnd: string | null;
 	}
+	type GameState = "create" | "showcase" | "winners";
+
+	interface GameData {
+		[userId: string]: {
+			[round: number]: {
+				question: Question;
+				answer: string;
+				vote: number;
+			}
+		}
+	}
+
+	interface Question {
+		questionID: string;
+		message: string;
+	}
 }
 
 
@@ -71,6 +87,20 @@ declare namespace Api {
 		isActive: number;
 		isEnded: number;
 		endedAt: string;
+	}
+
+	interface SearchGameBody {
+		userId: string;
+		lang: "es" | "en";
+		private: boolean;
+		userName: string;
+	}
+	interface JoinRoomData extends SearchGameBody {
+		roomID: number;
+	}
+	interface messageData extends JoinRoomData {
+		question: App.Question;
+		answer: string;
 	}
 }
   

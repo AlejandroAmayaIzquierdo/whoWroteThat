@@ -42,18 +42,20 @@ export class Room {
         this.interval = setInterval(async () => {
             Application.io.to(this.id).emit('updateRoom',this.game.getGameData());
             if(this.game.getGameData().done){
-                const now = new Date();
-                const formattedDate = now.toISOString().slice(0, 19).replace("T", " ");
-                await Db.getInstance().query(`UPDATE rooms SET players="${this.playersIDs.join(',')}",isActive=0,isEnded=1,endedAt="${formattedDate}" WHERE id="${this.id}"`);
-                this.done();
+                await this.done();
             }
-        },1000);
+        },100);
     }
 
-    public done = () => {
+    public done = async () => {
+
         if(this.interval)
             clearInterval(this.interval);
+        const now = new Date();
+        const formattedDate = now.toISOString().slice(0, 19).replace("T", " ");
+        await Db.getInstance().query(`UPDATE rooms SET players="${this.playersIDs.join(',')}",isActive=0,isEnded=1,endedAt="${formattedDate}" WHERE id="${this.id}"`);
         RoomManager.removeRoom(this.id);
+        
     }
 
     public getID = () => this.id;
