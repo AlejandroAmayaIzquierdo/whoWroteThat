@@ -9,10 +9,13 @@ export class RoomManager {
     public static rooms: Room[] = [];
 
 
-    public static joinRoom = async (socket: socketIO,roomID: number,userID: string) => {
+    public static joinRoom = async (socket: socketIO,roomID: number,user: Api.User) => {
         try {
+            if(!roomID || !user)
+                throw new Error('Invalid data');
+            
             const query = await Db.getInstance().query(`select * from rooms where id ='${roomID}'`) as Api.Room[];
-    
+            
             if(query.length > 0 || query.length < 2){
                 if(query[0].isEnded === 1)
                     socket.emit('joinedRoom',false);
@@ -21,10 +24,10 @@ export class RoomManager {
                 const isRoomCreated = this.rooms.find(e => e.getID() === roomID + "");
                 if(isRoomCreated){
                     socket.join(isRoomCreated.getID());
-                    isRoomCreated.join(userID);
+                    isRoomCreated.join(user);
                     console.log(isRoomCreated);
                 }else{
-                    this.createRoom(socket,roomID,userID,query[0].maxUsers);
+                    this.createRoom(socket,roomID,user,query[0].maxUsers);
                 }
             }else {
                 socket.emit('joinedRoom',false);
@@ -32,6 +35,7 @@ export class RoomManager {
 
             
         } catch (err) {
+            console.log(err);
             SocketHandler.disconnectUser(socket);
         }
     }
@@ -40,7 +44,7 @@ export class RoomManager {
         return RoomManager.rooms.find(e => {
             const users = e.getPlayers();
 
-            return users.find(j => j === userID);
+            return users.find(j => j.userId === userID);
         });
     }
 
@@ -51,14 +55,14 @@ export class RoomManager {
         }
     }
 
-    private static createRoom = async (socket: socketIO,roomID: number,userID: string,maxUsers: number) => {
-        console.log('CreatingRoom')
+    private static createRoom = async (socket: socketIO,roomID: number,user: Api.User,maxUsers: number) => {
+        console.log('CreatingRoom');
         const room = new Room(roomID,maxUsers);
         socket.join(roomID + "");
-        room.join(userID);
+        room.join(user);
 
         this.rooms.push(room);
-        console.log(this.rooms);
+        // console.log(this.rooms);
         
     }
 }

@@ -1,5 +1,6 @@
 ﻿import type { RequestEvent } from "@sveltejs/kit"
 import { User } from "../services/user";
+import { setUser } from "./stores/user";
 
 export const authenticateUser = async (event: RequestEvent) => {
     try {
@@ -13,8 +14,11 @@ export const authenticateUser = async (event: RequestEvent) => {
         // this is where you would check the user token against your database
         // to see if it is valid and return the user object
         const user = await User.getCurrentUser(userToken);
-        if(user)
+        if(user){
+            setUser(user);
             return {user,userToken};
+        }
+            
 
         return null
     } catch (error) {

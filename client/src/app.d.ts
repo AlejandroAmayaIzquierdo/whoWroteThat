@@ -20,9 +20,21 @@ declare namespace App {
 	}
 
 	interface Message {
-		text: string;
+		message: string;
 		isMine?: boolean;
 	}
+
+	interface GameData {
+		[userId: string]: {
+			[round: number]: {
+				messages: Message[];
+				answer?: string;
+				vote: number;
+			}
+		}
+	}
+
+	type GameState = "create" | "showcase" | "winners";
 }
 
 declare namespace Api {
@@ -46,6 +58,35 @@ declare namespace Api {
 		turn: string;
 		done: boolean;
 		winner: string | null;
+	}
+
+	interface searchGameResult {
+		roomId: string;
+		currentUsers: string[];
+	}
+
+	interface EmittedGameData {
+		round: number;
+		state: App.GameState;
+		data: App.GameData;
+		started: boolean;
+		done: boolean;
+	}
+
+	interface EmittedRoomData {
+		gameData: EmittedGameData;
+		players: App.User[];
+	}
+
+	interface SearchGameBody {
+		userId: string;
+		lang: "es" | "en";
+		private: boolean;
+		userName: string;
+	}
+
+	interface JoinRoomData extends SearchGameBody {
+		roomID: number;
 	}
 }
 

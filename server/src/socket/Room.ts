@@ -7,7 +7,7 @@ import { RoomManager } from "./RoomManager.js";
 export class Room {
     private id: string;
 
-    private playersIDs: string[] = [];
+    private playersInfo: Api.User[] = [];
 
     private maxPlayers: number = 2;
 
@@ -15,50 +15,58 @@ export class Room {
 
     private interval: NodeJS.Timeout | undefined;
 
-    public constructor(roomID: number,maxUsers?: number,players?: string[]){
+    public constructor(roomID: number,maxUsers?: number,players?: Api.User[]){
         this.id = `${roomID}`;
         if(maxUsers)
             this.maxPlayers = maxUsers;
 
         if(players)
-            this.playersIDs = [...this.playersIDs, ...players];
-        this.game = new Game();
+            this.playersInfo = [...this.playersInfo, ...players];
+        this.game = new Game(this.playersInfo);
     }
 
-    public join = async (userID: string) => {
-        if(this.playersIDs.length < this.maxPlayers && !this.playersIDs.find(e => e === userID))
-            this.playersIDs.push(userID);
-        Application.io.to(this.id).emit('joinedRoom',true);
+    public join = async (user: Api.User) => {
+        if(this.playersInfo.length < this.maxPlayers && !this.playersInfo.find(e => e.userId === user.userId))
+            this.playersInfo.push(user);
+        Application.io.to(this.id).emit('joinedRoom',this.playersInfo);
 
+        
+        this.game.players = this.playersInfo;
+        
 
-        if(this.playersIDs.length === this.maxPlayers){
-            await Db.getInstance().query(`UPDATE rooms SET players="${this.playersIDs.join(',')}",isActive=1 WHERE id='${this.id}'`);
-            this.game.startGame();
+        if(!this.interval)
             this.handle();
+
+        if(this.playersInfo.length === this.maxPlayers){
+            await Db.getInstance().query(`UPDATE rooms SET players="${this.playersInfo.map(e => e.userId).join(',')}",isActive=1 WHERE id='${this.id}'`);
+            this.game.startGame();
+            
         }
     }
 
     public handle = () => {
         this.interval = setInterval(async () => {
-            Application.io.to(this.id).emit('updateRoom',this.game.getGameData());
-            if(this.game.getGameData().done){
+            if(this.game.getGameData().started)
+                this.game.update();
+
+            if(this.game.getGameData().done)
                 await this.done();
-            }
-        },100);
+
+            Application.io.to(this.id).emit('updateRoom', {gameData: this.game.getGameData(),players: this.playersInfo});
+        },1000);
     }
 
     public done = async () => {
-
         if(this.interval)
             clearInterval(this.interval);
         const now = new Date();
         const formattedDate = now.toISOString().slice(0, 19).replace("T", " ");
-        await Db.getInstance().query(`UPDATE rooms SET players="${this.playersIDs.join(',')}",isActive=0,isEnded=1,endedAt="${formattedDate}" WHERE id="${this.id}"`);
+        await Db.getInstance().query(`UPDATE rooms SET players="${this.playersInfo.map(e => e.userId).join(',')}",isActive=0,isEnded=1,endedAt="${formattedDate}" WHERE id="${this.id}"`);
         RoomManager.removeRoom(this.id);
         
     }
 
     public getID = () => this.id;
     public getGame = () => this.game;
-    public getPlayers = () => this.playersIDs;
+    public getPlayers = () => this.playersInfo;
 }

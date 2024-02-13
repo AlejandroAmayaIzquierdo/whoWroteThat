@@ -8,17 +8,18 @@ export class SocketHandler {
 
     public static handleConnections = (io: ServerIO) => {
         io.on('connection', async (socket) => {
-            await this.handleAuth(socket);
+            // await this.handleAuth(socket);
 
             socket.on('joinRoom', async (data: Api.JoinRoomData) => {
-                RoomManager.joinRoom(socket,data.roomID,data.userId);
+                console.log("RoomID: " + data.roomId);
+                RoomManager.joinRoom(socket,data.roomId,{userId: data.userId,userName: data.userName});
             });
 
             socket.on('onSendMessage', async (data: Api.messageData) => {
-                // console.log('Clicket at ' + data.rowIndex + " " + data.columnIndex);
-                // const token = socket.request.headers.authorization;
-                // if(!token) {this.disconnectUser(socket); return;}
-                // RoomManager.onClick(data.roomID,data.rowIndex,data.columnIndex);
+                const room = RoomManager.isUserOnAnyRoom(data.userId);
+                if(room){
+                    room
+                }
             });
 
             socket.on('onSendVote', async (data: unknown) => {

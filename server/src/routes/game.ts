@@ -61,7 +61,7 @@ gameRoute.post('/searchGame', async (req,res) => {
         //Create room.
         const hash = crypto.createHash('sha256');
 
-        hash.update(data.userId + (new Date()).getTime());
+        hash.update(data.userId.toString() + (new Date()).getTime());
             
         const roomId = hash.digest('base64url');
             
@@ -75,6 +75,7 @@ gameRoute.post('/searchGame', async (req,res) => {
         }
         return res.status(202).send(response);
     } catch (error) {
+        console.log(error);
         const response: Api.Response = {
             status: 0,
             error: error

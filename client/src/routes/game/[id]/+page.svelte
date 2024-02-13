@@ -1,15 +1,39 @@
 ﻿<script lang="ts">
-	import Chat from '$lib/components/Chat/Chat.svelte';
-    import type { PageData } from './$types';
+	import { io } from 'socket.io-client';
+	import type { PageData } from './$types';
+	import { onMount } from 'svelte';
+	import Game from '$lib/components/Game/Game.svelte';
+	import Lobby from '$lib/components/Game/Lobby.svelte';
+	import { goto } from '$app/navigation';
+	import { CurrentUser } from '$lib/stores/user';
 
-    const messages = [{text: "hola",isMine: true},{text: "que tal"}] as App.Message[];
-    
-    export let data: PageData;
+	export let data: PageData;
+
+	const socket = io(`http://localhost:3000`);
+
+	let gameData: Api.EmittedRoomData | null = null;
+
+	socket.on('updateRoom', (data: Api.EmittedRoomData) => {
+		gameData = data;
+	});
+
+	onMount(() => {
+		if(!$CurrentUser)
+		    goto(`/game`); //TODO when is not logged save session data on cookies.
+		const joinRoomData = {
+			lang: 'es',
+			roomId: data.id,
+			userId: $CurrentUser?.userId,
+			userName: $CurrentUser?.userName,
+			private: true
+		} as unknown as Api.JoinRoomData;
+		console.log(joinRoomData);
+		socket.emit('joinRoom', joinRoomData);
+	});
 </script>
 
-
-<div class="bg-gray-100">
-    <div class="flex flex-col items-center justify-center w-screen min-h-screen bg-gray-100 text-gray-800 p-10">
-        <Chat {messages}/>
-    </div>
-</div>
+{#if !gameData || !gameData.gameData.started}
+	<Lobby {gameData} />
+{:else}
+	<Game {gameData} />
+{/if}

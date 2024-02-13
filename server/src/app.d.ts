@@ -25,11 +25,16 @@ declare namespace App {
 	interface GameData {
 		[userId: string]: {
 			[round: number]: {
-				question: Question;
-				answer: string;
+				messages: Message[];
+				answer?: string;
 				vote: number;
 			}
 		}
+	}
+
+	interface Message {
+		isMine?: boolean;
+		message: string;
 	}
 
 	interface Question {
@@ -80,6 +85,11 @@ declare namespace Api {
 		message: string;
 	}
 
+	interface User {
+		userName: string;
+		userId: string;
+	}
+
 	interface Room {
 		id: number;
 		players: string;
@@ -96,11 +106,20 @@ declare namespace Api {
 		userName: string;
 	}
 	interface JoinRoomData extends SearchGameBody {
-		roomID: number;
+		roomId: number;
 	}
 	interface messageData extends JoinRoomData {
 		question: App.Question;
 		answer: string;
+	}
+	
+	interface EmittedGameData {
+		round: number;
+		state: App.GameState;
+		data: App.GameData;
+		started: boolean;
+		done: boolean;
+		timeLeft: number;
 	}
 }
   
