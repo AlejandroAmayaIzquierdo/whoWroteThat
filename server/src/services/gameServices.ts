@@ -8,7 +8,7 @@ export const getRandomChat = async (): Promise<App.Message[]> => {
             messages.message,messages.isMine 
         FROM chats 
         INNER JOIN messages ON chats.id = messages.chatID 
-        WHERE chats.id = ${Math.floor(Math.random() * 3) + 1}`
+        WHERE chats.id = ${Math.floor(Math.random() * 4) + 1}`
     );
     
     if(resp)

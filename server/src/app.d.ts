@@ -120,6 +120,7 @@ declare namespace Api {
 		started: boolean;
 		done: boolean;
 		timeLeft: number;
+		showCasingUser: string;
 	}
 }
   

@@ -2,10 +2,13 @@
 
 export class Game {
 
-    private round:number = 0;
+    private round:number = 1;
     private readonly MAX_ROUND_BY_GAME:number = 3; 
-    private readonly TIME_BY_ROUND:number = 60; // 60 seconds
-    private readonly TIME_BY_SHOWCASE:number = 30; // 30 seconds
+    private readonly TIME_BY_ROUND:number = 10; // 60 seconds
+    private readonly TIME_SHOWCASE_BY_USER:number = 5; // 30 seconds
+    private showCasingUser:string = "";
+    private showCasingUserIndex:number = 0;
+
 
     private timeLeft:number = this.TIME_BY_ROUND;
 
@@ -31,25 +34,41 @@ export class Game {
     
 
     public startGame = async () => {
-        this.started = true;
         await this.generatedChats();
+
+        setTimeout(() => {
+            this.started = true;
+        }, 3000);
+
     }
 
     public endRound = () => {
 
-        if(this.state === "create" && this.round !== this.MAX_ROUND_BY_GAME) {
+        if(this.state === "create") {
             this.state = "showcase";
-            this.timeLeft = this.TIME_BY_SHOWCASE;
+            this.timeLeft = this.TIME_SHOWCASE_BY_USER;
+
+            this.showCasingUserIndex = 0;
+            this.showCasingUser = this.players[this.showCasingUserIndex].userId;
         }
-        else if(this.state === "showcase" && this.round !== this.MAX_ROUND_BY_GAME) {
-            this.round++;
-            this.timeLeft = this.TIME_BY_ROUND;
+        else if(this.state === "showcase" && this.round < this.MAX_ROUND_BY_GAME) {
+            if(this.showCasingUserIndex >= this.players.length - 1) {
+                this.round++;
+                this.timeLeft = this.TIME_BY_ROUND;
+                this.state = "create";
+                this.showCasingUserIndex = 0;
+                this.showCasingUser = this.players[this.showCasingUserIndex].userId;
+                return;
+            }
+
+            this.showCasingUserIndex++;
+            this.showCasingUser = this.players[this.showCasingUserIndex].userId;
+            this.timeLeft = this.TIME_SHOWCASE_BY_USER;
         }
         else if(this.state === "showcase" && this.round === this.MAX_ROUND_BY_GAME) {
             this.state = "winners";
             this.done = true;
         }
-
     }
 
     public setAnswer = (userID: string,answer:string) => {
@@ -62,7 +81,7 @@ export class Game {
         console.log(this.players);
         for await (const player of this.players) {
             this.data[player.userId] = {};
-            for (let i = 0; i < this.MAX_ROUND_BY_GAME; i++) {
+            for (let i = 1; i <= this.MAX_ROUND_BY_GAME; i++) {
                 const messages = await getRandomChat();
                 this.data[player.userId][i] = {
                     messages,
@@ -86,6 +105,7 @@ export class Game {
             started: this.started,
             done: this.done,
             timeLeft: this.timeLeft,
+            showCasingUser: this.showCasingUser,
         }
     };
 }

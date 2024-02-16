@@ -71,6 +71,8 @@ declare namespace Api {
 		data: App.GameData;
 		started: boolean;
 		done: boolean;
+		timeLeft: number;
+		showCasingUser: string;
 	}
 
 	interface EmittedRoomData {

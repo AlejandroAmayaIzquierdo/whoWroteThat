@@ -5,6 +5,10 @@
 
 	export let messages: App.Message[];
 
+	export let noAwnser = false;
+
+	export let isDisabled = false;
+
 	const handleSendMasage = () => {
 		if (message) {
 			messages = [...messages, { message, isMine: true }];
@@ -21,6 +25,11 @@
 			{#each messages as message}
 				<Message {message} />
 			{/each}
+			{#if noAwnser}
+				<div class="flex justify-center">
+					<span class="text-red-500 font-bold">No awnser</span>
+				</div>
+			{/if}
 		{/if}
 	</div>
 	<form on:submit|preventDefault={handleSendMasage}>
@@ -28,10 +37,11 @@
 			<input
 				type="text"
 				class="flex-grow rounded-lg border p-2"
+				disabled={isDisabled}
 				placeholder="Type a message..."
 				bind:value={message}
 			/>
-			<button class="rounded-lg bg-blue-500 p-2 text-white" on:click={handleSendMasage}>
+			<button disabled={isDisabled} class="rounded-lg bg-blue-500 p-2 text-white" on:click={handleSendMasage}>
 				Send
 			</button>
 		</div>

@@ -49,8 +49,12 @@ export class Room {
             if(this.game.getGameData().started)
                 this.game.update();
 
-            if(this.game.getGameData().done)
-                await this.done();
+            if(this.game.getGameData().done) {
+                setTimeout(() => {
+                    this.done();
+                }, 10000);
+            }
+                
 
             Application.io.to(this.id).emit('updateRoom', {gameData: this.game.getGameData(),players: this.playersInfo});
         },1000);
