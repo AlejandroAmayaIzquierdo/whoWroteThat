@@ -68,7 +68,7 @@ export class RoomManager {
     private static createRoom = async (socket: socketIO,roomID: number,user: Api.User,maxUsers: number) => {
         console.log('CreatingRoom');
         const room = new Room(roomID,maxUsers);
-        socket.join(roomID + "");
+        socket.join(`${roomID}`);
         room.join(user);
 
         this.rooms.push(room);

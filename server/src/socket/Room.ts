@@ -45,9 +45,10 @@ export class Room {
     }
 
     public leave = async (user: Api.User) =>  {
+        console.log('User left',user.userId);
         this.playersInfo = this.playersInfo.filter(e => e.userId !== user.userId);
         Application.io.to(this.id).emit('leavedRoom',user);
-        if(this.playersInfo.length === 1)
+        if(this.playersInfo.length <= 1)
             this.done();
     }
 

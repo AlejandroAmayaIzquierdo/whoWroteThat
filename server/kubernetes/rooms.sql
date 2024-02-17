@@ -5,9 +5,10 @@
 	`isActive` BIT(1) NOT NULL,
 	`isEnded` BIT(1) NOT NULL,
 	`endedAt` VARCHAR(100) NULL DEFAULT NULL COLLATE 'latin1_swedish_ci',
+	`gameData` TEXT NULL DEFAULT NULL COLLATE 'latin1_swedish_ci',
+	`winnerUser` VARCHAR(50) NULL DEFAULT NULL COLLATE 'latin1_swedish_ci',
 	PRIMARY KEY (`id`) USING BTREE
 )
 COLLATE='latin1_swedish_ci'
 ENGINE=MyISAM
-AUTO_INCREMENT=9
 ;

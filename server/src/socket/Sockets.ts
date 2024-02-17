@@ -28,7 +28,7 @@ export class SocketHandler {
                 // const token = socket.request.headers.authorization;
                 // if(!token)  return;
                 // const session = await AuthManager.getInstance().getAuth()?.validateSession(token) as Lucia.Session;
-                console.log("User Disconnected",reason,desc);
+                // console.log("User Disconnected",reason,desc);
                 
                 const room = RoomManager.isSocketOnAnyRoom(socket.id);
 

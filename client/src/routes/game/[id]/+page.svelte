@@ -34,7 +34,7 @@
 	const resetTimeout = () => {
 		clearTimeout(timeoutId);
 		timeoutId = setTimeout(() => {
-			toast('Disconnected from server');
+			toast.error('Disconnected from server');
 			setTimeout(() => {
 				goto(`/game`);
 			}, 3000);
@@ -70,12 +70,13 @@
 		} as unknown as Api.JoinRoomData;
 		console.log(joinRoomData);
 		socket.emit('joinRoom', joinRoomData);
+		// toast.loading('Joining room...', { duration: 5000 });
 	});
 
 
 </script>
 
-<Toaster />
+<Toaster richColors />
 {#if !gameData || !gameData.gameData.started}
 	<Lobby {gameData} />
 {:else}
