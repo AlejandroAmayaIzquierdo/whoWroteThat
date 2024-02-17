@@ -1,6 +1,6 @@
 ﻿import { Db } from "../database/dbConnection.js";
 import { Room } from "./Room.js";
-import { Socket as socketIO } from "socket.io";
+import { Socket, Socket as socketIO } from "socket.io";
 import { SocketHandler } from "./Sockets.js";
 
 
@@ -45,6 +45,16 @@ export class RoomManager {
             const users = e.getPlayers();
 
             return users.find(j => j.userId === userID);
+        });
+    }
+
+    public static isSocketOnAnyRoom = (socketID: string) => {
+        return RoomManager.rooms.find(e => {
+            const users = e.getPlayers();
+
+            return users.find(j => {
+                return j.SocketId === socketID;
+            });
         });
     }
 

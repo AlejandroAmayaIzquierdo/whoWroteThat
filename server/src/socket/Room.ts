@@ -44,6 +44,13 @@ export class Room {
         }
     }
 
+    public leave = async (user: Api.User) =>  {
+        this.playersInfo = this.playersInfo.filter(e => e.userId !== user.userId);
+        Application.io.to(this.id).emit('leavedRoom',user);
+        if(this.playersInfo.length === 1)
+            this.done();
+    }
+
     public handle = () => {
         this.interval = setInterval(async () => {
             if(this.game.getGameData().started)

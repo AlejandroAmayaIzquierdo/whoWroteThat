@@ -12,7 +12,7 @@ export class SocketHandler {
 
             socket.on('joinRoom', async (data: Api.JoinRoomData) => {
                 console.log("RoomID: " + data.roomId);
-                RoomManager.joinRoom(socket,data.roomId,{userId: data.userId,userName: data.userName});
+                RoomManager.joinRoom(socket,data.roomId,{userId: data.userId,userName: data.userName, SocketId: socket.id});
             });
 
             socket.on('onSendMessage', async (data: Api.messageData) => {
@@ -25,11 +25,27 @@ export class SocketHandler {
             socket.on('onSendVote', async (data: unknown) => {
             });
 
-            socket.on('disconnect',async() => {
+            socket.on('disconnect',async(reason,desc) => {
                 // const token = socket.request.headers.authorization;
                 // if(!token)  return;
                 // const session = await AuthManager.getInstance().getAuth()?.validateSession(token) as Lucia.Session;
-                console.log("User Disconnected");
+                console.log("User Disconnected",reason,desc);
+                
+                const room = RoomManager.isSocketOnAnyRoom(socket.id);
+
+                if(!room) 
+                    return;
+
+                
+
+                const user = room.getPlayers().find(e => e.SocketId === socket.id);
+
+                if(!user)
+                    return;
+
+                
+                room.leave(user);
+                
                 // const isUserOnRoom = RoomManager.isUserOnAnyRoom(session.user.userId);
 
                 // if(isUserOnRoom){

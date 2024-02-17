@@ -88,6 +88,7 @@ declare namespace Api {
 	interface User {
 		userName: string;
 		userId: string;
+		SocketId?: string;
 	}
 
 	interface Room {

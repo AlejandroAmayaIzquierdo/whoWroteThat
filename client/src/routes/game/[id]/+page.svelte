@@ -8,6 +8,7 @@
 	import { CurrentUser } from '$lib/stores/user';
 	import Winners from '$lib/components/Game/Winners.svelte';
 	import Showcase from '$lib/components/Game/Showcase.svelte';
+	import { Toaster, toast } from 'svelte-sonner';
 
 	export let data: PageData;
 
@@ -26,8 +27,35 @@
 		}	
 	};
 
+	let timeoutId: NodeJS.Timeout;
+
+	const timeoutDuration = 5000;
+
+	const resetTimeout = () => {
+		clearTimeout(timeoutId);
+		timeoutId = setTimeout(() => {
+			toast('Disconnected from server');
+			setTimeout(() => {
+				goto(`/game`);
+			}, 3000);
+		}, timeoutDuration);
+	};
+
 	socket.on('updateRoom', (data: Api.EmittedRoomData) => {
 		gameData = data;
+		
+		resetTimeout();
+	});
+
+	socket.on('leavedRoom', (user: App.User) => {
+		toast('User ' + user.userName + ' leaved the room');
+	});
+
+	socket.on('disconnect', () => {
+		toast('Disconnected from server');
+		setTimeout(() => {
+			goto(`/game`);
+		}, 3000);
 	});
 
 	onMount(() => {
@@ -47,6 +75,7 @@
 
 </script>
 
+<Toaster />
 {#if !gameData || !gameData.gameData.started}
 	<Lobby {gameData} />
 {:else}
