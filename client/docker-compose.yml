@@ -1,0 +1,13 @@
+﻿version: '3'
+
+services:
+  frontend:
+    build: .
+    env_file:
+      - ./.env
+    ports:
+      - "$PORT:$PORT"
+    environment:
+      PORT: $PORT
+      VITE_APP_BASE_URL: $VITE_APP_BASE_URL
+

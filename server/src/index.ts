@@ -45,8 +45,17 @@ export class Application {
         this.app.use('/',Routes);
     }
 
-    public handle = () => {
-        Db.getInstance();
+    public handle = async () => {
+        
+        const isDbUp = await Db.getInstance().isConnectionAlive();
+
+        if(!isDbUp) {
+            console.log('Database connection failed');
+            console.log('Trying to reconnect every 5 seconds...');
+            setTimeout(() => this.handle(),5000);
+            return;
+        }
+        
         CronManager.getInstance();
         AuthManager.getInstance();
 

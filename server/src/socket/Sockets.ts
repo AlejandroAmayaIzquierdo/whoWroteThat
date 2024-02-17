@@ -1,7 +1,6 @@
 ﻿import { Server as ServerIO,Socket as socketIO } from "socket.io";
-import { AuthManager } from "../database/AuthManager.js";
+// import { AuthManager } from "../database/AuthManager.js";
 import { RoomManager } from "./RoomManager.js";
-import { Application } from "../index.js";
 
 
 export class SocketHandler {
@@ -56,15 +55,15 @@ export class SocketHandler {
         });
     }
 
-    private static handleAuth = async (socket: socketIO) =>  {
-        const token = socket.request.headers.authorization;
-        if(!token) { this.disconnectUser(socket); return;}
+    // private static handleAuth = async (socket: socketIO) =>  {
+    //     const token = socket.request.headers.authorization;
+    //     if(!token) { this.disconnectUser(socket); return;}
 
 
-        const isValid = await AuthManager.getInstance().getAuth()?.validateSession(token);
-        if(!isValid)
-            this.disconnectUser(socket);
-    }
+    //     const isValid = await AuthManager.getInstance().getAuth()?.validateSession(token);
+    //     if(!isValid)
+    //         this.disconnectUser(socket);
+    // }
 
     public static disconnectUser = (socket: socketIO) => {
         console.log("Unauthorize user!");

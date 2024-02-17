@@ -1,6 +1,6 @@
 ﻿import { Db } from "../database/dbConnection.js";
 import { Room } from "./Room.js";
-import { Socket, Socket as socketIO } from "socket.io";
+import { Socket as socketIO } from "socket.io";
 import { SocketHandler } from "./Sockets.js";
 
 

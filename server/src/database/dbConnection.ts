@@ -26,6 +26,16 @@ export class Db {
         return this.instance;
     }
 
+    public isConnectionAlive = async (): Promise<boolean> => {
+        try {
+            const query = await this.poolConnection?.query('SELECT 1');
+            return query?.[0] ? true : false;
+        } catch (error) {
+            // console.log(error);
+            return false;
+        }
+    }
+
     public query = async (sql: string): Promise<unknown> => {
         try {
             const query = await this.poolConnection?.query(sql);
