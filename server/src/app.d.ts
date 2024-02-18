@@ -107,11 +107,14 @@ declare namespace Api {
 		userName: string;
 	}
 	interface JoinRoomData extends SearchGameBody {
-		roomId: number;
+		roomId: string;
 	}
-	interface messageData extends JoinRoomData {
-		question: App.Question;
+	interface messageData extends Omit<JoinRoomData,"lang" | "private">  {
 		answer: string;
+	}
+
+	interface voteData extends Omit<JoinRoomData,"lang" | "private" | "userName"> {
+		vote: number;
 	}
 	
 	interface EmittedGameData {
@@ -122,6 +125,10 @@ declare namespace Api {
 		done: boolean;
 		timeLeft: number;
 		showCasingUser: string;
+	}
+
+	interface GetFileBody {
+		id: string;
 	}
 }
   
