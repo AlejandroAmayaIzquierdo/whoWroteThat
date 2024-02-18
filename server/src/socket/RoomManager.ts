@@ -9,7 +9,7 @@ export class RoomManager {
     public static rooms: Room[] = [];
 
 
-    public static joinRoom = async (socket: socketIO,roomID: number,user: Api.User) => {
+    public static joinRoom = async (socket: socketIO,roomID: string,user: Api.User) => {
         try {
             if(!roomID || !user)
                 throw new Error('Invalid data');
@@ -65,7 +65,7 @@ export class RoomManager {
         }
     }
 
-    private static createRoom = async (socket: socketIO,roomID: number,user: Api.User,maxUsers: number) => {
+    private static createRoom = async (socket: socketIO,roomID: string,user: Api.User,maxUsers: number) => {
         console.log('CreatingRoom');
         const room = new Room(roomID,maxUsers);
         socket.join(`${roomID}`);

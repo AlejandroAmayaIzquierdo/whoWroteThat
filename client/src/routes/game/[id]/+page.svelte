@@ -14,17 +14,17 @@
 
 	const socket = io(`http://localhost:3000`);
 
-	let gameData: Api.EmittedRoomData | null = {
-		players: [{ userId: $CurrentUser?.userId ?? "", userName: $CurrentUser?.userName ?? ""}],
+	let gameData: Api.EmittedRoomData = {
+		players: [{ userId: $CurrentUser?.userId ?? '', userName: $CurrentUser?.userName ?? '' }],
 		gameData: {
 			state: 'create',
-			round: 0,
+			round: 1,
 			timeLeft: 0,
 			data: {},
-			showCasingUser: '',
 			started: false,
 			done: false,
-		}	
+			showCasingUser: '',
+		}
 	};
 
 	let timeoutId: NodeJS.Timeout;
@@ -43,7 +43,7 @@
 
 	socket.on('updateRoom', (data: Api.EmittedRoomData) => {
 		gameData = data;
-		
+
 		resetTimeout();
 	});
 
@@ -70,20 +70,41 @@
 		} as unknown as Api.JoinRoomData;
 		console.log(joinRoomData);
 		socket.emit('joinRoom', joinRoomData);
-		// toast.loading('Joining room...', { duration: 5000 });
+		toast.loading('Joining room...', { duration: 5000 });
 	});
 
+	const handleVote = (vote: number) => {
+		const voteData: Api.voteData = {
+			roomID: data.id,
+			userId: gameData.gameData.showCasingUser,
+			vote
+		};
+		socket.emit('onSendVote', voteData);
+	}
 
+	const handleSetAnswer = (answer: string) => {
+		const answerData: Api.messageData = {
+			roomID: data.id,
+			userId: $CurrentUser?.userId ?? '',
+			userName: $CurrentUser?.userName ?? '',
+			answer
+		};
+		socket.emit('onSendMessage', answerData);
+
+	}
+
+	$: isMyShowCase = gameData.gameData.showCasingUser === $CurrentUser?.userId;
 </script>
 
 <Toaster richColors />
+
 {#if !gameData || !gameData.gameData.started}
 	<Lobby {gameData} />
 {:else}
 	{#if gameData.gameData.state === 'showcase'}
-		<Showcase {gameData} />
+		<Showcase isDisableVote={isMyShowCase} onVote={handleVote} gameData={gameData}/>
 	{:else if gameData.gameData.state === 'create'}
-		<Game {gameData} />
+		<Game onSendMessage={handleSetAnswer} {gameData} />
 	{:else if gameData.gameData.state === 'winners'}
 		<Winners {gameData} />
 	{/if}

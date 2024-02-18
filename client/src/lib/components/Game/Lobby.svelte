@@ -1,4 +1,5 @@
 ﻿<script lang="ts">
+	import { CurrentUser } from "$lib/stores/user";
 	import Avatar from "../ui/avatar/Avatar.svelte";
 
     export let gameData: Api.EmittedRoomData | null;
@@ -20,7 +21,7 @@
                     {#each gameData.players as player}
                         <div class="flex flex-col items-center justify-center p-5">
                             <Avatar user={player} height={100} width={100}/>
-                            <span style="margin-top: 5px;">{player.userName}</span>
+                            <span style="margin-top: 5px;">{player.userName} {player.userId === $CurrentUser?.userId ? "(you)" : ""}</span>
                         </div>
                     {/each}
                 {/if}

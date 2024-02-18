@@ -16,12 +16,14 @@ export class SocketHandler {
 
             socket.on('onSendMessage', async (data: Api.messageData) => {
                 const room = RoomManager.isUserOnAnyRoom(data.userId);
-                if(room){
-                    room
-                }
+
+                room?.getGame().setAnswer(data.userId,data.answer);
             });
 
-            socket.on('onSendVote', async (data: unknown) => {
+            socket.on('onSendVote', async (data: Api.voteData) => {
+                const room = RoomManager.isUserOnAnyRoom(data.userId);
+
+                room?.getGame().addVote(data.userId,data.vote);
             });
 
             socket.on('disconnect',async(reason,desc) => {

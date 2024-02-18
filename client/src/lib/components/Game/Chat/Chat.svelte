@@ -9,10 +9,17 @@
 
 	export let isDisabled = false;
 
+	export let onSendMessage: (message: string) => void = () => {};
+
+	let response = '';
+
 	const handleSendMasage = () => {
 		if (message) {
-			messages = [...messages, { message, isMine: true }];
+			onSendMessage(message);
+			response = message;
+			// messages = [...messages, { message, isMine: true }];
 			message = '';
+			isDisabled = true;
 		}
 	};
 </script>
@@ -25,6 +32,9 @@
 			{#each messages as message}
 				<Message {message} />
 			{/each}
+			{#if response}
+				<Message message={{message: response, isMine: true}} />
+			{/if}
 			{#if noAwnser}
 				<div class="flex justify-center">
 					<span class="text-red-500 font-bold">No awnser</span>

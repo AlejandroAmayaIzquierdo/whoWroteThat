@@ -26,12 +26,14 @@ declare namespace App {
 
 	interface GameData {
 		[userId: string]: {
-			[round: number]: {
-				messages: Message[];
-				answer?: string;
-				vote: number;
-			}
+			[round: number]: UserGameData;
 		}
+	}
+
+	interface UserGameData {
+		messages: Message[];
+		answer?: string;
+		vote: number;
 	}
 
 	type GameState = "create" | "showcase" | "winners";
@@ -88,7 +90,15 @@ declare namespace Api {
 	}
 
 	interface JoinRoomData extends SearchGameBody {
-		roomID: number;
+		roomID: string;
+	}
+
+	interface messageData extends Omit<JoinRoomData,"lang" | "private">  {
+		answer: string;
+	}
+
+	interface voteData extends Omit<JoinRoomData,"lang" | "private" | "userName"> {
+		vote: number;
 	}
 }
 

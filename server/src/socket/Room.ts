@@ -15,7 +15,7 @@ export class Room {
 
     private interval: NodeJS.Timeout | undefined;
 
-    public constructor(roomID: number,maxUsers?: number,players?: Api.User[]){
+    public constructor(roomID: string,maxUsers?: number,players?: Api.User[]){
         this.id = `${roomID}`;
         if(maxUsers)
             this.maxPlayers = maxUsers;

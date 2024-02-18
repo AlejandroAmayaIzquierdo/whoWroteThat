@@ -71,11 +71,6 @@ export class Game {
         }
     }
 
-    public setAnswer = (userID: string,answer:string) => {
-        this.data[userID][this.round].answer = answer;
-        this.data[userID][this.round].vote = 0;
-    }
-
     public generatedChats = async () => {
         console.log('Generating chats');
         console.log(this.players);
@@ -91,8 +86,13 @@ export class Game {
         }
     }
 
+    public setAnswer = (userID: string,answer:string) => {
+        this.data[userID][this.round].answer = answer;
+        this.data[userID][this.round].vote = 0;
+    }
+
     public addVote = (userID:string,vote: number) => {
-        if(this.state !== "showcase")
+        if(this.state !== "showcase" || this.showCasingUser === userID)
             return;
         this.data[userID][this.round].vote += vote;
     }
