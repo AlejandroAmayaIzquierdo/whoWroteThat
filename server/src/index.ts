@@ -3,6 +3,7 @@ import { Server as ServerIO } from "socket.io";
 import cors from "cors";
 import logger from "morgan";
 import dotenv from 'dotenv';
+import fileUpload from 'express-fileupload';
 
 
 import { createServer,Server as NodeServer } from 'node:http';
@@ -39,6 +40,7 @@ export class Application {
         this.app.use(cors());
         this.app.use(logger('dev'));
         this.app.use(Express.json());
+        this.app.use(fileUpload());
     }
 
     private InitializeRoutes = () => {

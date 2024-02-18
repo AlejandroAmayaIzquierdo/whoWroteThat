@@ -1,17 +1,29 @@
-﻿import fs from 'fs';
-import { Response,Request } from "express";
-import { getFile } from "../services/StorageServices";
+﻿import { Response, Request } from "express";
+import { UploadedFile } from 'express-fileupload';
+import { registerFile, saveFile } from "../services/StorageServices";
 
 
-
-export const storageGetController = async (req: Request, res: Response): Promise<fs.ReadStream> => {
+export const storagePostController = async (req: Request, res: Response) => {
     try {
-        const { id } = req.body as unknown as Api.GetFileBody;
-        console.log("ID: ", id);
-        const file = await getFile(id);
-        return file;
-    } catch (error) {
-        // console.log(error);
-        throw { message: error, code: 500 };
+        const file = req.files?.file as UploadedFile;
+
+
+        const saveFileData = await saveFile(file);
+
+        if (!saveFileData)
+            throw new Error('Error while saving the file');
+
+        const isFileRegistered = await registerFile(
+            saveFileData.name,
+            saveFileData.type,
+            saveFileData.path,
+            saveFileData.hash
+        );
+
+        if (!isFileRegistered)
+            throw new Error('Error while registering the file');
+        return saveFileData;
+    } catch (err) {
+        throw { message: err, code: 500 };
     }
 }

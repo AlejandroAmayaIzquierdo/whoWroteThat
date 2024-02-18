@@ -41,6 +41,13 @@ declare namespace App {
 		questionID: string;
 		message: string;
 	}
+
+	interface FileSaveData {
+		name: string;
+		type: string;
+		path: string;
+		hash: string;
+	}
 }
 
 
