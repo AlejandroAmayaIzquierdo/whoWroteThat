@@ -64,6 +64,16 @@ CREATE TABLE `messages` (
 )
 COLLATE='latin1_swedish_ci';
 
+CREATE TABLE `storage` (
+	`storageId` INT(11) NOT NULL AUTO_INCREMENT,
+	`name` VARCHAR(200) NOT NULL COLLATE 'latin1_swedish_ci',
+	`type` VARCHAR(50) NOT NULL COLLATE 'latin1_swedish_ci',
+	`path` MEDIUMTEXT NOT NULL COLLATE 'latin1_swedish_ci',
+	`hash` VARCHAR(300) NOT NULL COLLATE 'latin1_swedish_ci',
+	PRIMARY KEY (`storageId`) USING BTREE
+)
+COLLATE='latin1_swedish_ci';
+
 INSERT INTO `cron_tasks` (`name`, `schedule`, `is_active`, `lastEnd`) VALUES ('SessionCron', '0 * * * *', 1, '2023-12-03 17:33:43');
 
 
