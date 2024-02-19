@@ -12,6 +12,11 @@
 		"format": "prettier --write ."
 	},
 	"devDependencies": {
+		"@iconify/icons-bi": "^1.2.0",
+		"@iconify/icons-fa": "^1.2.3",
+		"@iconify/icons-iconamoon": "^1.2.0",
+		"@iconify/icons-line-md": "^1.2.30",
+		"@iconify/svelte": "^3.1.6",
 		"@sveltejs/adapter-auto": "^3.0.0",
 		"@sveltejs/adapter-node": "^4.0.1",
 		"@sveltejs/kit": "^2.0.0",
@@ -42,6 +47,7 @@
 		"@types/node": "^20.11.19",
 		"bits-ui": "^0.14.0",
 		"clsx": "^2.1.0",
+		"google-auth-library": "^9.6.3",
 		"lucide-svelte": "^0.309.0",
 		"socket.io-client": "^4.7.4",
 		"svelte-icons": "^2.1.0",

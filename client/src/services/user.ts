@@ -1,4 +1,4 @@
-﻿import { VITE_APP_BASE_URL } from "$lib/Contants";
+﻿import { VITE_APP_BASE_URL } from '$env/static/private';
 import { Cookies } from "$lib/util/Cookies";
 
 

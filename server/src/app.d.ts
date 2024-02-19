@@ -56,6 +56,8 @@ declare namespace Lucia {
 	type Auth = import("./lucia.js").Auth;
 	type DatabaseUserAttributes = {
 		userName: string;
+		profilePic?: string;
+		profileName?: string;
 	};
 	type DatabaseSessionAttributes = {};
 
@@ -73,7 +75,7 @@ declare namespace Lucia {
         state: string;
         fresh: boolean;
 	}
-	type Providers = "id";
+	type Providers = "id" | "google";
 }
 
 /// <reference types="Api" />
@@ -136,6 +138,15 @@ declare namespace Api {
 
 	interface GetFileBody {
 		id: string;
+	}
+
+	interface OAuth2Google {
+		access_token: string;
+		refresh_token: string;
+		scope: string;
+		token_type: string;
+		id_token: string;
+		expiry_date: number;
 	}
 }
   

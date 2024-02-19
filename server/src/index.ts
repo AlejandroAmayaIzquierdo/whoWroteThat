@@ -18,7 +18,7 @@ dotenv.config();
 
 const PORT = process.env.PORT ?? 3000;
 
-export const {DB_HOST,DB_USER,DB_PASS,BD_DATABASE_NAME} = process.env;
+export const {DB_HOST,DB_USER,DB_PASS,BD_DATABASE_NAME,SECRET_CLIENT_ID,SECRET_CLIENT_SECRET} = process.env;
 
 export class Application {
     private app: ExpressType;

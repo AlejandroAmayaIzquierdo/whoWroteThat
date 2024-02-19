@@ -24,7 +24,6 @@ export const createSession = async (userID: string): Promise<Lucia.Session> => {
     if(!auth)
         throw { message: "Internal server error", code: 500 };
 
-
     const session: Lucia.Session = await auth.createSession({
         userId: userID,
         attributes: {}
@@ -39,7 +38,7 @@ export const getUser = async(provider: Lucia.Providers,providerUserId: string,pa
 
 
     const user = await auth.useKey(
-        "id",
+        provider,
         providerUserId.toLocaleLowerCase(),
         password
     );

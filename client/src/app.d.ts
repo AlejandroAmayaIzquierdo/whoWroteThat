@@ -3,8 +3,8 @@
 // and what to do when importing types
 declare namespace App {
 	interface Locals {
-		user: User | undefined;
-		authToken: string | undefined;
+		user: User | undefined | null;
+		authToken: string | undefined | null;
 	}
 	// interface PageData {}
 	// interface Error {}
@@ -13,6 +13,8 @@ declare namespace App {
 	interface User {
 		userName: string;
 		userId: string;
+		profilePic?: string;
+		profileName?: string;
 	}
 	interface Room {
 		roomId: number;
@@ -65,6 +67,15 @@ declare namespace Api {
 	interface searchGameResult {
 		roomId: string;
 		currentUsers: string[];
+	}
+
+	interface SessionResult {
+		user: App.User;
+		sessionId: string;
+		activePeriodExpiresAt: Date;
+		idlePeriodExpiresAt: Date;
+		state: string;
+		fresh: boolean;
 	}
 
 	interface EmittedGameData {

@@ -5,8 +5,14 @@ import { type Handle } from "@sveltejs/kit";
 export const handle: Handle = async ({ event, resolve }) => {
     //TODO the app will have free access but if you have and account will get extra features.
     const auth = await authenticateUser(event);
-    event.locals.user = auth?.user;
-    event.locals.authToken = auth?.userToken;
+    if (auth) {
+        event.locals.user = auth?.user;
+        event.locals.authToken = auth?.userToken;
+    }else {
+        event.locals.user = null;
+        event.locals.authToken = null;
+    }
+
 
     if (event.url.pathname.startsWith('/game/') || event.url.pathname === '/game') {
         // Accessing /game or /game/[id]

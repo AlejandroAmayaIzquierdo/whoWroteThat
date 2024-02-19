@@ -15,7 +15,7 @@
 	const socket = io(`http://localhost:3000`);
 
 	let gameData: Api.EmittedRoomData = {
-		players: [{ userId: $CurrentUser?.userId ?? '', userName: $CurrentUser?.userName ?? '' }],
+		players: [{ userId: data.user?.userId ?? '', userName: data.user?.profileName ?? data.user?.userName ?? data.user?.userId ?? ''}],
 		gameData: {
 			state: 'create',
 			round: 1,
