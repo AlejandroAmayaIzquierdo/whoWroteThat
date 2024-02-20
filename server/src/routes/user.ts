@@ -107,7 +107,7 @@ userRoute.get('/currentUser', async (req, res) => {
 			await Db.getInstance().query(`UPDATE users SET profilePic = '${profilePic}', profileName = '${profileName}' WHERE id = '${session.user.userId}'`) as Api.User[];
 		}
 			
-		const userData = await Db.getInstance().query(`SELECT id,userName,profilePic,profileName FROM users WHERE id = '${session.user.userId}'`) as Api.User[];
+		const userData = await Db.getInstance().query(`SELECT id as userId,userName,profilePic,profileName FROM users WHERE id = '${session.user.userId}'`) as Api.User[];
 		const user = userData.length > 0 ? userData[0] : session.user;
 		return res.status(200).send({ status: 1, result: user });
 	} catch (err) {

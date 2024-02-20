@@ -14,7 +14,7 @@
 
     let userName = '';
 
-    const handleFindGame = async () => {
+    const handleFindAnonymousGame = async () => {
         if(!userName)
             return;
         const userId = `${userName}-${Math.random().toString(36).substring(2,9)}`;
@@ -28,6 +28,19 @@
 
         setUser({userId,userName});
     }
+
+    const handleFindGame = async () => {
+        if(!data.user?.userId || !data.user.profileName) return;
+        const resp = await searchGame(data.user?.userId,data.user.profileName,false);
+        console.log(resp);
+        if(resp.status === 0)
+            return;
+        const {roomId} = resp.result as Api.searchGameResult;
+
+        // goto(`/game/${roomId}`);
+    }
+
+
 
 </script>
 
