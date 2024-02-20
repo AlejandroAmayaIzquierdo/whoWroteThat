@@ -1,9 +1,10 @@
 ﻿CREATE TABLE `rooms` (
 	`id` VARCHAR(200) NOT NULL COLLATE 'latin1_swedish_ci',
-	`players` VARCHAR(200) NULL DEFAULT NULL COLLATE 'latin1_swedish_ci',
+	`players` VARCHAR(200) NOT NULL COLLATE 'latin1_swedish_ci',
 	`maxUsers` INT(11) NOT NULL DEFAULT '2',
 	`isActive` BIT(1) NOT NULL,
 	`isEnded` BIT(1) NOT NULL,
+	`isPrivate` INT(11) NOT NULL DEFAULT '0',
 	`endedAt` VARCHAR(100) NULL DEFAULT NULL COLLATE 'latin1_swedish_ci',
 	`gameData` TEXT NULL DEFAULT NULL COLLATE 'latin1_swedish_ci',
 	`winnerUser` VARCHAR(50) NULL DEFAULT NULL COLLATE 'latin1_swedish_ci',
