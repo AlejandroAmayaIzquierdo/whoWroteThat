@@ -71,7 +71,11 @@ userRoute.get('/currentUser', async (req, res) => {
 			if(!oauth2CredentialsString || oauth2CredentialsString.length === 0)
 				return res.status(500).send({ status: 0, error: "Internal Server Error" });
 
-			let oauth2CredentialsData = JSON.parse(oauth2CredentialsString[0].google_auth) as Api.OAuth2Google;
+			const oauth2CredentialsData = JSON.parse(oauth2CredentialsString[0].google_auth) as Api.OAuth2Google;
+
+			// console.log(JSON.stringify(oauth2CredentialsData));
+
+
 			const redirecrUrl = 'http://localhost:5173/oauth';
 			const oAuth2Client = new OAuth2Client({
 				clientId: SECRET_CLIENT_ID,
@@ -79,30 +83,20 @@ userRoute.get('/currentUser', async (req, res) => {
 				redirectUri: redirecrUrl,
 			});
 
-			const expiredAt = oauth2CredentialsData.expiry_date;
+			oAuth2Client.setCredentials({access_token: oauth2CredentialsData.access_token, refresh_token: oauth2CredentialsData.refresh_token});
 
-			if(expiredAt) {
-				const now = new Date().getTime();
-				const expired = new Date(expiredAt).getTime();
-				if(now > expired) {
-					const refresh = await oAuth2Client.refreshAccessToken();
-					oauth2CredentialsData = { ...refresh.credentials as Api.OAuth2Google};
-				}
-			}
-
-			oAuth2Client.setCredentials(oauth2CredentialsData);
 
 			const userInfo = await oAuth2Client.verifyIdToken({
 				idToken: oauth2CredentialsData.id_token,
 				audience: SECRET_CLIENT_ID,
 			});
 
-			console.log(userInfo.getPayload()?.locale);
+			// console.log(userInfo.getPayload()?.picture, userInfo.getPayload()?.name);
 
 			const profilePic = userInfo.getPayload()?.picture;
 			const profileName = userInfo.getPayload()?.name;
 
-			console.log(profilePic, profileName);
+			// console.log(profilePic, profileName);
 
 			await Db.getInstance().query(`UPDATE users SET profilePic = '${profilePic}', profileName = '${profileName}' WHERE id = '${session.user.userId}'`) as Api.User[];
 		}
@@ -111,6 +105,7 @@ userRoute.get('/currentUser', async (req, res) => {
 		const user = userData.length > 0 ? userData[0] : session.user;
 		return res.status(200).send({ status: 1, result: user });
 	} catch (err) {
+		console.log(err);
 		return res.status(500).send({ status: 0, error: err });
 	}
 });

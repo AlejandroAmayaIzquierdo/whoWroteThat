@@ -7,53 +7,81 @@ import crypto from "crypto";
 
 const gameRoute = express.Router();
 
-gameRoute.post('/searchGame', async (req,res) => {
-    //TODO make it right
+gameRoute.post('/searchGame/:roomID', async (req, res) => {
+    try {
+        const roomID = req.params.roomID;
+
+        if (roomID) {
+            const room = await Db.getInstance().query(`SELECT * FROM rooms WHERE id='${roomID} AND isPrivate = 1'`) as Api.Room[];
+            if (room.length > 0) {
+                const players = room[0].players.split(',');
+                const response: Api.Response = {
+                    status: 1,
+                    result: {
+                        roomId: room[0].id,
+                        currentUsers: players
+                    }
+                };
+                return res.status(202).send(response);
+            }
+        }
+        throw new Error('Room not found');
+    } catch (err) {
+        console.log(err);
+        const response: Api.Response = {
+            status: 0,
+            error: err
+        }
+        return res.status(500).send(response);
+    }
+});
+
+gameRoute.post('/searchGame', async (req, res) => {
     try {
         const data = req.body as Api.SearchGameBody;
-        console.log(data);
 
-        // const auth = req.headers.authorization;
-        // if(!auth)
-        //     throw new Error('unauthorized User');
-    
         const db = Db.getInstance();
-    
-        // // const {user} = await AuthManager.getInstance().getAuth()?.validateSession(auth) as Lucia.Session;
-        const isUserOnActiveRoom = await db.query(`SELECT * FROM rooms WHERE isEnded=0 AND players LIKE '%${data.userId}%'`) as Api.Room[];
 
-        if(isUserOnActiveRoom.length > 0){
-            const players = isUserOnActiveRoom[0].players.split(',');
-            const response: Api.Response = {
-                status: 1,
-                result: {
-                    roomId: isUserOnActiveRoom[0].id,
-                    currentUsers: players
-                }
-            };
-            return res.status(202).send(response);
-        }
+        if (!data.isPrivate) {
+            console.log('Searching for active room');
 
-        //Search for room.
-        const activeRooms = await db.query(`SELECT * FROM rooms WHERE isActive=0 AND isEnded=0`) as Api.Room[];
-        console.log("Searching for room");
-        if (activeRooms.length > 0) {
-            //TODO add like search algoritm to play with similar users level
+            const isUserOnActiveRoom = await db.query(`SELECT * FROM rooms WHERE isEnded=0 AND players LIKE '%${data.userId}%'`) as Api.Room[];
 
-            
-            const players = activeRooms[0].players.split(',');
-            if(!players.find(e => e === data.userId)){
-                players.push(data.userId);
-                await Db.getInstance().query(`UPDATE rooms SET players="${players.join(',')}",isActive=1 WHERE id='${activeRooms[0].id}'`);
+            if (isUserOnActiveRoom.length > 0) {
+                const players = isUserOnActiveRoom[0].players.split(',');
+                const response: Api.Response = {
+                    status: 1,
+                    result: {
+                        roomId: isUserOnActiveRoom[0].id,
+                        currentUsers: players
+                    }
+                };
+                return res.status(202).send(response);
             }
-            const response: Api.Response = {
-                status: 1,
-                result: {
-                    roomId: activeRooms[0].id,
-                    currentUsers: players
+
+            console.log('Searching for room');
+
+            //Search for room.
+            const activeRooms = await db.query(`SELECT * FROM rooms WHERE isActive=0 AND isEnded=0`) as Api.Room[];
+            console.log("Searching for room");
+            if (activeRooms.length > 0) {
+                //TODO add like search algoritm to play with similar users level
+
+
+                const players = activeRooms[0].players.split(',');
+                if (!players.find(e => e === data.userId)) {
+                    players.push(data.userId);
+                    await Db.getInstance().query(`UPDATE rooms SET players="${players.join(',')}",isActive=1 WHERE id='${activeRooms[0].id} AND isPrivate=0'`);
                 }
-            };
-            return res.status(202).send(response);
+                const response: Api.Response = {
+                    status: 1,
+                    result: {
+                        roomId: activeRooms[0].id,
+                        currentUsers: players
+                    }
+                };
+                return res.status(202).send(response);
+            }
         }
 
         console.log('Creating room');
@@ -62,10 +90,11 @@ gameRoute.post('/searchGame', async (req,res) => {
         const hash = crypto.createHash('sha256');
 
         hash.update(data.userId.toString() + (new Date()).getTime());
-            
+
         const roomId = hash.digest('base64url');
-            
-        await db.query(`INSERT INTO rooms (id,players,maxUsers,isActive,isEnded) VALUES ("${roomId}","${data.userId}",2,0,0);`) as ResultSetHeader;
+        const isPrivate = data.isPrivate ? '1' : '0';
+
+        await db.query(`INSERT INTO rooms (id,players,maxUsers,isActive,isEnded,isPrivate) VALUES ("${roomId}","${data.userId}",2,0,0,${isPrivate});`) as ResultSetHeader;
         const response: Api.Response = {
             status: 1,
             result: {

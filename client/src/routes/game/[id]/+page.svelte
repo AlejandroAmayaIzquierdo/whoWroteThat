@@ -14,8 +14,10 @@
 
 	const socket = io(`http://localhost:3000`);
 
+	const currentUser = data.user ?? $CurrentUser;
+
 	let gameData: Api.EmittedRoomData = {
-		players: [{ userId: data.user?.userId ?? '', userName: data.user?.profileName ?? data.user?.userName ?? data.user?.userId ?? ''}],
+		players: [{ userId: currentUser?.userId ?? '', userName: currentUser?.profileName ?? currentUser?.userName ?? currentUser?.userId ?? ''}],
 		gameData: {
 			state: 'create',
 			round: 1,
@@ -51,6 +53,7 @@
 		toast('User ' + user.userName + ' leaved the room');
 	});
 
+
 	socket.on('disconnect', () => {
 		toast('Disconnected from server');
 		setTimeout(() => {
@@ -59,16 +62,16 @@
 	});
 
 	onMount(() => {
-		if(!$CurrentUser)
+		if(!currentUser)
 		    goto(`/game`); //TODO when is not logged save session data on cookies.
 		const joinRoomData = {
 			lang: 'es',
 			roomId: data.id,
-			userId: $CurrentUser?.userId,
-			userName: $CurrentUser?.userName,
+			userId: currentUser?.userId,
+			userName: currentUser?.profileName ?? currentUser?.userName ?? currentUser?.userId ?? '',
 			private: true
 		} as unknown as Api.JoinRoomData;
-		console.log(joinRoomData);
+		// console.log(joinRoomData);
 		socket.emit('joinRoom', joinRoomData);
 		toast.loading('Joining room...', { duration: 5000 });
 	});
@@ -85,21 +88,21 @@
 	const handleSetAnswer = (answer: string) => {
 		const answerData: Api.messageData = {
 			roomID: data.id,
-			userId: $CurrentUser?.userId ?? '',
-			userName: $CurrentUser?.userName ?? '',
+			userId: currentUser?.userId ?? '',
+			userName: currentUser?.userName ?? '',
 			answer
 		};
 		socket.emit('onSendMessage', answerData);
 
 	}
 
-	$: isMyShowCase = gameData.gameData.showCasingUser === $CurrentUser?.userId;
+	$: isMyShowCase = gameData.gameData.showCasingUser === currentUser?.userId;
 </script>
 
 <Toaster richColors />
 
 {#if !gameData || !gameData.gameData.started}
-	<Lobby {gameData} />
+	<Lobby {gameData} roomID={data.id} />
 {:else}
 	{#if gameData.gameData.state === 'showcase'}
 		<Showcase isDisableVote={isMyShowCase} onVote={handleVote} gameData={gameData}/>

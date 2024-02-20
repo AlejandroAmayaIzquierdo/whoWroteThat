@@ -91,6 +91,7 @@ declare namespace Api {
 	interface EmittedRoomData {
 		gameData: EmittedGameData;
 		players: App.User[];
+		isPrivate?: boolean;
 	}
 
 	interface SearchGameBody {

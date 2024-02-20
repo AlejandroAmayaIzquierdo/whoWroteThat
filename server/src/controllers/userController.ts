@@ -62,16 +62,7 @@ export const oauthController = async (req: Request, res: Response) => {
         redirectUri: redirecrUrl,
     });
 
-    const expiredAt = oauthCredentials.refresh_token;
-
-    if(expiredAt) {
-        const now = new Date().getTime();
-        const expired = new Date(expiredAt).getTime();
-        if(now > expired) {
-            const refresh = await oAuth2Client.refreshAccessToken();
-            oauthCredentials = {...refresh.credentials as Api.OAuth2Google};
-        }
-    }
+    // const { tokens } = await oAuth2Client.getToken(oauthCredentials.refresh_token);
 
     oAuth2Client.setCredentials(oauthCredentials);
 

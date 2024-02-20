@@ -1,8 +1,11 @@
 ﻿<script lang="ts">
 	import { CurrentUser } from "$lib/stores/user";
 	import Avatar from "../ui/avatar/Avatar.svelte";
+	import SecretCode from "./Lobby/SecretCode.svelte";
 
     export let gameData: Api.EmittedRoomData | null;
+
+    export let roomID: string;
 
     // $: {
     //     console.log(gameData);
@@ -31,6 +34,12 @@
     <div class="flex flex-col items-center justify-center w-1/2 min-w-fit  text-gray-800 p-10">
         <div class="flex flex-grow flex-col w-full overflow-hidden rounded-2xl shadow-sm bg-white p-10">
             <h1 class="text-4xl font-bold">Who wrote that</h1>
+            
+            {#if gameData?.isPrivate}
+                <SecretCode secretKey={roomID}/>
+            {/if}
+
+
             {#if gameData && gameData.players.length === 2}
                 <span>The game will start in a moment</span>
             {:else}

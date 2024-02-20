@@ -14,7 +14,7 @@ export class RoomManager {
             if(!roomID || !user)
                 throw new Error('Invalid data');
             
-            const query = await Db.getInstance().query(`select * from rooms where id ='${roomID}'`) as Api.Room[];
+            const query = await Db.getInstance().query(`select id,isEnded,isPrivate,maxUsers from rooms where id ='${roomID}'`) as Api.Room[];
             
             if(query.length > 0 || query.length < 2){
                 if(query[0].isEnded === 1)
@@ -27,7 +27,14 @@ export class RoomManager {
                     isRoomCreated.join(user);
                     console.log(isRoomCreated);
                 }else{
-                    this.createRoom(socket,roomID,user,query[0].maxUsers);
+                    console.log(query[0].isPrivate);
+                    this.createRoom(
+                        socket,
+                        roomID,
+                        user,
+                        query[0].maxUsers,
+                        query[0].isPrivate === 1 ? true : false
+                    );
                 }
             }else {
                 socket.emit('joinedRoom',false);
@@ -65,9 +72,10 @@ export class RoomManager {
         }
     }
 
-    private static createRoom = async (socket: socketIO,roomID: string,user: Api.User,maxUsers: number) => {
+    private static createRoom = async (socket: socketIO,roomID: string,user: Api.User,maxUsers: number,isPrivate?:boolean) => {
         console.log('CreatingRoom');
-        const room = new Room(roomID,maxUsers);
+        console.log(isPrivate);
+        const room = new Room(roomID,maxUsers,[],isPrivate);
         socket.join(`${roomID}`);
         room.join(user);
 

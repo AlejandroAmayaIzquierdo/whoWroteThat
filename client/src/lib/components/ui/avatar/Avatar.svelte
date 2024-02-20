@@ -15,7 +15,9 @@
 </script>
 
 <div class="relative inline-flex items-center justify-center overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600 shadow-lg" style="width: {width}px; height: {height}px;">
-    {#if user?.userName}
+    {#if user?.profilePic}
+        <img src={user.profilePic} alt="profile" class="w-8 h-8 sm:w-12 sm:h-12 select-none rounded-full"/>
+    {:else if user?.userName && !user?.profilePic}
         <span class="font-medium text-gray-600 dark:text-gray-300">{handleGetUserInitials(user?.userName)}</span>
     {:else}
         <svg class="absolute w-full h-full text-gray-400 -left-1 border-solid border-gray-50" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>

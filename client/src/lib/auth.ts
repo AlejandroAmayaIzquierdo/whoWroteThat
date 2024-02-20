@@ -14,7 +14,7 @@ export const authenticateUser = async (event: RequestEvent) => {
         // this is where you would check the user token against your database
         // to see if it is valid and return the user object
         const user = await User.getCurrentUser(userToken);
-        console.log(user);
+        // console.log(user);
         if(user){
             setUser(user);
             return {user,userToken};

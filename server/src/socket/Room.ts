@@ -15,7 +15,9 @@ export class Room {
 
     private interval: NodeJS.Timeout | undefined;
 
-    public constructor(roomID: string,maxUsers?: number,players?: Api.User[]){
+    private isPrivate: boolean = false;
+
+    public constructor(roomID: string,maxUsers?: number,players?: Api.User[],isPrivate?: boolean){
         this.id = `${roomID}`;
         if(maxUsers)
             this.maxPlayers = maxUsers;
@@ -23,6 +25,7 @@ export class Room {
         if(players)
             this.playersInfo = [...this.playersInfo, ...players];
         this.game = new Game(this.playersInfo);
+        this.isPrivate = isPrivate || false;
     }
 
     public join = async (user: Api.User) => {
@@ -64,7 +67,7 @@ export class Room {
             }
                 
 
-            Application.io.to(this.id).emit('updateRoom', {gameData: this.game.getGameData(),players: this.playersInfo});
+            Application.io.to(this.id).emit('updateRoom', {gameData: this.game.getGameData(),players: this.playersInfo,isPrivate: this.isPrivate});
         },1000);
     }
 

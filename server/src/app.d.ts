@@ -107,12 +107,13 @@ declare namespace Api {
 		isActive: number;
 		isEnded: number;
 		endedAt: string;
+		isPrivate: number;
 	}
 
 	interface SearchGameBody {
 		userId: string;
 		lang: "es" | "en";
-		private: boolean;
+		isPrivate: boolean;
 		userName: string;
 	}
 	interface JoinRoomData extends SearchGameBody {
