@@ -1,7 +1,7 @@
 ﻿import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { Db } from '../database/dbConnection';
+import { Db } from '../database/dbConnection.js';
 import { UploadedFile } from 'express-fileupload';
 import crypto from "crypto";
 

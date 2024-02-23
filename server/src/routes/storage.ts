@@ -1,8 +1,8 @@
 ﻿import express, { Response, Request } from "express";
 import { Stream } from "stream";
-import { getFile } from "../services/StorageServices";
-import { AuthManager } from "../database/AuthManager";
-import { storagePostController } from "../controllers/StorageController";
+import { getFile } from "../services/StorageServices.js";
+import { AuthManager } from "../database/AuthManager.js";
+import { storagePostController } from "../controllers/StorageController.js";
 
 
 const storageRoute = express.Router();

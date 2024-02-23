@@ -1,6 +1,6 @@
 ﻿import { Response, Request } from "express";
 import { UploadedFile } from 'express-fileupload';
-import { registerFile, saveFile } from "../services/StorageServices";
+import { registerFile, saveFile } from "../services/StorageServices.js";
 
 
 export const storagePostController = async (req: Request, res: Response) => {
