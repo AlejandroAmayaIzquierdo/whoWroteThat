@@ -32,7 +32,7 @@ userRoute.post('/oauth', async (req, res) => {
 		}
 		return res.status(202).send(response);
 	} catch (err) {
-		const error = err as Api.Error;
+		// const error = err as Api.Error;
 		return res.status(500).send({ status: 0, error: `${err}` });
 	}
 });

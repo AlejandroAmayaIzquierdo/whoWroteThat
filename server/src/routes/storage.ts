@@ -19,7 +19,7 @@ storageRoute.get('/:fileID', async (req: Request, res: Response) => {
         readStream.end(fileContents);
         res.set('Content-disposition', 'attachment; filename=' + fileID);
         res.set('Content-Type', acceptHeader);
-        readStream.pipe(res);
+        return readStream.pipe(res);
     } catch (err) {
         console.error(err);
         const error = err as Api.Error;

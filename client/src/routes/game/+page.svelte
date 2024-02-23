@@ -63,7 +63,7 @@
                 />
                 <button 
                     class="rounded-lg bg-blue-500 p-2 text-white w-1/4 ml-5"
-                    on:click={() => handleFindAnonymousGame()}
+                    on:click={() => handleFindAnonymousGame(false)}
                 >
                     Play
                 </button>
