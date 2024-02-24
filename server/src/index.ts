@@ -18,7 +18,15 @@ dotenv.config();
 
 const PORT = process.env.PORT ?? 3000;
 
-export const {DB_HOST,DB_USER,DB_PASS,BD_DATABASE_NAME,SECRET_CLIENT_ID,SECRET_CLIENT_SECRET} = process.env;
+export const {
+    DB_HOST,
+    DB_USER,
+    DB_PASS,
+    BD_DATABASE_NAME,SECRET_CLIENT_ID,
+    SECRET_CLIENT_SECRET,
+    GITHUB_CLIENT_ID,
+    GITHUB_CLIENT_SECRET
+} = process.env;
 
 export class Application {
     private app: ExpressType;
@@ -37,7 +45,13 @@ export class Application {
 
     private InitializeApp = () => {
         this.app.disable('x-powered-by');
-        this.app.use(cors());
+        this.app.use(cors(
+            {
+                origin: '*',
+                methods: ['GET','POST','PUT','DELETE'],
+                allowedHeaders: ['Content-Type','Authorization','Accept','Origin']
+            }
+        ));
         this.app.use(logger('dev'));
         this.app.use(Express.json());
         this.app.use(fileUpload());

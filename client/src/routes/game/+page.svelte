@@ -83,7 +83,7 @@
                 <form class="auth-form" method="post" action="?/OAuth2Google">
                     <button class="text-5xl p-5" type="submit"><Icon icon={Google}/></button>
                 </form>
-                <form class="auth-form" method="post" action="?/OAuth2Github">
+                <form class="auth-form" method="post" action="?/OAuthGithub">
                     <button class="text-5xl p-5" type="submit"><Icon icon={Github}/></button>
                 </form>
             </div>

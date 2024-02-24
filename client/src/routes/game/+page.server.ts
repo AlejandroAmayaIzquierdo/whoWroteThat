@@ -1,7 +1,8 @@
 ﻿import type { PageServerLoad } from './$types';
 import { OAuth2Client } from 'google-auth-library';
-import { SECRET_CLIENT_ID, SECRET_CLIENT_SECRET } from '$env/static/private';
+import { SECRET_CLIENT_ID, SECRET_CLIENT_SECRET,GITHUB_CLIENT_ID,GITHUB_CLIENT_SECRET } from '$env/static/private';
 import { redirect } from '@sveltejs/kit';
+import { GitHub, generateState } from "arctic";
 
 export const load: PageServerLoad = async ({locals}) => {
     return {
@@ -30,5 +31,27 @@ export const actions = {
         });
 
         throw redirect(302, authUrl);
+    },
+    OAuthGithub: async ({cookies}) => {
+        const github = new GitHub(
+            GITHUB_CLIENT_ID,
+            GITHUB_CLIENT_SECRET
+        );
+        const state = generateState();
+        const url = await github.createAuthorizationURL(state);
+        
+        cookies.set(
+            'github_oauth_state', 
+            state, 
+            { 
+                path: '/', 
+                maxAge: 60*10, 
+                httpOnly: true,
+                sameSite: 'lax',
+            }
+        );
+        throw redirect(302, url.toString());
+
+
     }
 }

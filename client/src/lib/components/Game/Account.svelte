@@ -3,11 +3,23 @@
 <script lang="ts">
     import Icon from '@iconify/svelte';
     import profileFill from '@iconify/icons-iconamoon/profile-fill';
+	import { Cookies } from '$lib/util/Cookies';
+	import { User } from '../../../services/user';
+	import { goto } from '$app/navigation';
 
     export let user: App.User;
 
 
-    const handleLogOut = () => {}
+    const handleLogOut = async () => {
+        try {
+            await User.logout(Cookies.getCookie('auth') ?? '');
+            Cookies.eraseCookie('auth');
+        } catch (error) {
+            Cookies.eraseCookie('auth');
+        }
+        goto('/game', { replaceState: true });
+
+    }
 </script>
 
 

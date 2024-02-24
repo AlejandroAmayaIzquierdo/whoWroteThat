@@ -1,4 +1,4 @@
-﻿import { VITE_APP_BASE_URL } from '$env/static/private';
+﻿import { VITE_APP_BASE_URL } from "$lib/Contants";
 import { Cookies } from "$lib/util/Cookies";
 
 
@@ -28,5 +28,43 @@ export class User {
         }
 
         return data.result as App.User;
+    }
+
+    public static postOauthGit = async (code: string, state: string): Promise<Api.Session | null> => {
+        const resp = await fetch(`${VITE_APP_BASE_URL}/${MODULE}/oauthGit`, {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ code, state })
+        });
+
+        const data = await resp.json() as Api.StandardResp;
+        
+        if(data.status === 0){
+            return null;
+        }
+
+        return data.result as Api.Session;
+    }
+
+    public static logout = async (token: string): Promise<boolean> => {
+        const resp = await fetch(`${VITE_APP_BASE_URL}/${MODULE}/logout`, {
+            method: "PUT",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "Authorization": token
+            }
+        });
+
+        const data = await resp.json() as Api.StandardResp;
+        
+        if(data.status === 0){
+            return false;
+        }
+
+        return true;
     }
 }

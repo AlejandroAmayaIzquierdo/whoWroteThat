@@ -3,8 +3,9 @@ import { createSession, createUser, getUser } from "../services/userServices.js"
 import { createKeyId } from "lucia";
 import { AuthManager } from "../database/AuthManager.js";
 import { OAuth2Client } from "google-auth-library";
-import { SECRET_CLIENT_ID, SECRET_CLIENT_SECRET } from "../index.js";
+import { SECRET_CLIENT_ID, SECRET_CLIENT_SECRET, GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET } from "../index.js";
 import { Db } from "../database/dbConnection.js";
+import { GitHub } from "arctic";
 
 
 export const signupController =  async (req: Request, res: Response): Promise<Lucia.Session> => {
@@ -45,6 +46,71 @@ export const logInController = async (req: Request, res: Response) : Promise<Luc
     } catch (error) {
         throw { message: error, code: 500 };
     }
+}
+
+export const oauthGitController = async (req: Request, res: Response) => {
+    const auth = AuthManager.getInstance().getAuth();
+    const code = req.body.code as string;
+    const state = req.body.state as string;
+
+    if (!code || !state) {
+        throw { message: "Error while getting the code", code: 402 };
+    }
+
+    const github = new GitHub(
+        GITHUB_CLIENT_ID ?? '',
+        GITHUB_CLIENT_SECRET ?? ''
+    );
+
+    const tokens = await github.validateAuthorizationCode(code);
+    const githubUserResponse = await fetch("https://api.github.com/user", {
+        headers: {
+            Authorization: `Bearer ${tokens.accessToken}`
+        }
+    });
+    const githubUser: App.GitHubUser = await githubUserResponse.json();
+
+    console.log(JSON.stringify(githubUser));
+
+    const existingUser = await Db.getInstance().query(
+        `SELECT user_key.id AS user_key_id,user_id, github_id
+        FROM user_key
+        WHERE github_id = '${githubUser.id}'`) as { user_key_id: string,user_id:string,github_id: string }[];
+
+    console.log(existingUser);
+
+    if(existingUser && existingUser.length > 0) {
+        const session = await createSession(existingUser[0].user_id);
+        console.log(session);
+        return session;
+    }
+
+    
+
+    const user: Lucia.User = await auth?.createUser({
+        key: {
+            providerId: "github",
+            providerUserId: githubUser.login.toLowerCase(),
+            password: "github" // hashed by Lucia
+        
+        },
+        attributes: {
+            userName: githubUser.login,
+            profilePic: githubUser.avatar_url,
+            profileName: githubUser.name,
+        }
+
+    });
+    // const userKey = createKeyId("google",githubUser.login.toLowerCase());
+    // console.log(userKey);
+    // console.log(await Db.getInstance().query(`SELECT * FROM user_key`));
+    console.log('User id',user.userId);
+    const resp = await Db.getInstance().query(`UPDATE user_key SET github_auth = '${JSON.stringify(githubUser)}', github_id = '${githubUser.id}' WHERE user_id = '${user.userId}'`);
+    console.log(resp);
+    const session = await createSession(user.userId);
+
+    console.log(session);
+    return session;
 }
 
 export const oauthController = async (req: Request, res: Response) => {

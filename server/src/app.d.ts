@@ -6,7 +6,7 @@ declare namespace App {
 		category: categories;
 		fact: string;
 	}
-	
+
 	type categories = "cats" | "dogs";
 
 	interface CronTask {
@@ -48,6 +48,41 @@ declare namespace App {
 		path: string;
 		hash: string;
 	}
+
+	interface GitHubUser {
+		login: string;
+		id: number;
+		node_id: string;
+		avatar_url: string;
+		gravatar_id: string;
+		url: string;
+		html_url: string;
+		followers_url: string;
+		following_url: string;
+		gists_url: string;
+		starred_url: string;
+		subscriptions_url: string;
+		organizations_url: string;
+		repos_url: string;
+		events_url: string;
+		received_events_url: string;
+		type: string;
+		site_admin: boolean;
+		name: string;
+		company: string | null;
+		blog: string;
+		location: string;
+		email: string | null;
+		hireable: boolean | null;
+		bio: string | null;
+		twitter_username: string | null;
+		public_repos: number;
+		public_gists: number;
+		followers: number;
+		following: number;
+		created_at: string;
+		updated_at: string;
+	}
 }
 
 
@@ -58,6 +93,7 @@ declare namespace Lucia {
 		userName: string;
 		profilePic?: string;
 		profileName?: string;
+		github_id?: string;
 	};
 	type DatabaseSessionAttributes = {};
 
@@ -70,10 +106,10 @@ declare namespace Lucia {
 	interface Session {
 		user: User;
 		sessionId: string;
-        activePeriodExpiresAt: string;
-        idlePeriodExpiresAt: string;
-        state: string;
-        fresh: boolean;
+		activePeriodExpiresAt: string;
+		idlePeriodExpiresAt: string;
+		state: string;
+		fresh: boolean;
 	}
 	type Providers = "id" | "google";
 }
@@ -119,14 +155,14 @@ declare namespace Api {
 	interface JoinRoomData extends SearchGameBody {
 		roomId: string;
 	}
-	interface messageData extends Omit<JoinRoomData,"lang" | "private">  {
+	interface messageData extends Omit<JoinRoomData, "lang" | "private"> {
 		answer: string;
 	}
 
-	interface voteData extends Omit<JoinRoomData,"lang" | "private" | "userName"> {
+	interface voteData extends Omit<JoinRoomData, "lang" | "private" | "userName"> {
 		vote: number;
 	}
-	
+
 	interface EmittedGameData {
 		round: number;
 		state: App.GameState;
@@ -150,4 +186,3 @@ declare namespace Api {
 		expiry_date: number;
 	}
 }
-  
