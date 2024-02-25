@@ -43,6 +43,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@midudev/tailwind-animations": "^0.0.7",
 		"@radix-ui/react-avatar": "^1.0.4",
 		"@types/node": "^20.11.19",
 		"arctic": "^1.2.0",

@@ -1,10 +1,13 @@
 import { fontFamily } from "tailwindcss/defaultTheme";
+import animations from '@midudev/tailwind-animations'
+
 
 /** @type {import('tailwindcss').Config} */
 const config = {
 	darkMode: ["class"],
 	content: ["./src/**/*.{html,js,svelte,ts}"],
-  safelist: ["dark"],
+	safelist: ["dark"],
+	plugins: [animations],
 	theme: {
 		container: {
 			center: true,

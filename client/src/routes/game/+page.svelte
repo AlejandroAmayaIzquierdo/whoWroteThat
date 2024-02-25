@@ -1,18 +1,21 @@
 ﻿<script lang="ts">
 	import { goto } from '$app/navigation';
-	import { CurrentUser, setUser } from '$lib/stores/user';
+	import { setUser } from '$lib/stores/user';
 	import { searchGame } from '../../services/game';
     import Account from '$lib/components/Game/Account.svelte';
     import Icon from '@iconify/svelte';
     import Google from '@iconify/icons-bi/google';
     import Github from '@iconify/icons-bi/github';
 	import type { PageData } from '../$types';
+	import Modal from '$lib/components/ui/Modal/Modal.svelte';
 	// import ProfileFill from '@iconify/icons-iconamoon/profile-fill';
 
     export let data: PageData;
 
 
     let userName = '';
+
+    let isModalOpen = false;
 
     const handleFindAnonymousGame = async (isPrivate?: boolean) => {
         if(!userName)
@@ -50,6 +53,9 @@
 
 </script>
 
+<div class="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-transparent modal-content">
+    <Modal isOpen={isModalOpen} setIsOpen={(val) => isModalOpen = val } onCreateLobby={() => handleFindGame(true)} onJoinLobby={(lobby) => console.log(lobby)}/>
+</div>
 <div class="h-full w-full absolute top-0 left-0 mx-auto flex justify-center items-center">
     {#if data.user === null}
         <div class="flex flex-col items-center justify-center w-screen bg-gray-100 min-h-screen text-gray-800 p-10">
@@ -71,7 +77,7 @@
             <div class="flex w-1/2 justify-center items-center">
                 <button 
                 class="rounded-lg bg-blue-500 p-2 text-white w-full ml-5 mr-5"
-                on:click={() => handleFindAnonymousGame(true)}
+                on:click={() => isModalOpen = true}
             >
                 Private lobby
             </button>
@@ -92,13 +98,13 @@
         <div class="flex p-10 w-1/2 justify-center items-center">
             <button 
                 class="rounded-lg bg-blue-500 p-2 text-white w-1/4 m-5"
-                on:click={() => handleFindGame()}
+                on:click={() => handleFindGame(false)}
             >
                 Play
             </button>
             <button 
             class="rounded-lg bg-blue-500 p-2 text-white w-1/4 m-5"
-            on:click={() => handleFindGame(true)}
+            on:click={() => isModalOpen = true}
         >
             Play Private
         </button>

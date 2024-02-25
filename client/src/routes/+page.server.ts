@@ -6,5 +6,4 @@ export const load = (async ({locals}) => {
         user: locals.user,
         authToken: locals.authToken
     }
-    // throw redirect(302,'/game');
 }) satisfies PageServerLoad;
