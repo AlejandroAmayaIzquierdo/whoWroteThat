@@ -15,7 +15,7 @@
 
     let userName = '';
 
-    let isModalOpen = false;
+    let isModalOpen = true;
 
     const handleFindAnonymousGame = async (isPrivate?: boolean) => {
         if(!userName)
@@ -53,9 +53,8 @@
 
 </script>
 
-<div class="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-transparent modal-content">
-    <Modal isOpen={isModalOpen} setIsOpen={(val) => isModalOpen = val } onCreateLobby={() => handleFindGame(true)} onJoinLobby={(lobby) => console.log(lobby)}/>
-</div>
+<Modal isOpen={isModalOpen} setIsOpen={(val) => isModalOpen = val } onCreateLobby={() => handleFindGame(true)} onJoinLobby={(lobby) => console.log(lobby)}/>
+
 <div class="h-full w-full absolute top-0 left-0 mx-auto flex justify-center items-center">
     {#if data.user === null}
         <div class="flex flex-col items-center justify-center w-screen bg-gray-100 min-h-screen text-gray-800 p-10">

@@ -23,11 +23,17 @@
     }
 </script>
 
-{#if $isOpenTweened > 0} <!-- Check if the value is greater than 0 -->
-<div
-    class="h-full w-full rounded-xl border-2 border-gray-800 bg-gray-100 p-4 text-center backdrop-blur-lg {isOpen ? 'animate-fade-in-up' : 'animate-fade-out-down'} animate-duration-normal"
+{#if $isOpenTweened > 0}
+<!-- svelte-ignore a11y-no-static-element-interactions -->
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<div on:click={() => setIsOpen(false)} 
+    class="w-full h-full flex justify-center items-center absolute z-10">
+    <div
+    on:click|stopPropagation
+    class="h-1/3 w-1/3 left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-xl border-2 border-gray-800 bg-gray-100 p-4 text-center backdrop-blur-lg {isOpen ? 'animate-fade-in-up' : 'animate-fade-out-down'} animate-duration-normal"
 >
-    <button
+    <div on:click|stopPropagation>
+        <button
         class="absolute right-2 top-2 p-1 text-xl text-bl transition-transform hover:scale-110 active:scale-95"
         on:click={() => setIsOpen(false)}
         ><svg
@@ -75,5 +81,9 @@
             </div>
         </div>
     </div>
+    </div>
+    
 </div>
+</div>
+
 {/if}
