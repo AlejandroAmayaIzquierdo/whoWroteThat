@@ -37,7 +37,7 @@
         if(!data.user?.userId) return;
         console.log(data.user.profileName)
         const userName = data.user?.profileName ?? data.user?.userName ?? data.user?.userId;
-        const resp = await searchGame(data.user?.userId,userName,isPrivate ?? false);
+        const resp = await searchGame(data.user.userId,userName,isPrivate ?? false);
         console.log(resp);
         if(resp.status === 0)
             return;

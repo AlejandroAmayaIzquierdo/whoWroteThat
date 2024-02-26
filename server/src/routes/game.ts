@@ -12,7 +12,9 @@ gameRoute.post('/searchGame/:roomID', async (req, res) => {
         const roomID = req.params.roomID;
 
         if (roomID) {
-            const room = await Db.getInstance().query(`SELECT * FROM rooms WHERE id='${roomID} AND isPrivate = 1'`) as Api.Room[];
+            const room = await Db.getInstance().query(`
+                SELECT * FROM rooms WHERE id='${roomID} AND isPrivate = 1'`
+            ) as Api.Room[];
             if (room.length > 0) {
                 const players = room[0].players.split(',');
                 const response: Api.Response = {
@@ -39,13 +41,16 @@ gameRoute.post('/searchGame/:roomID', async (req, res) => {
 gameRoute.post('/searchGame', async (req, res) => {
     try {
         const data = req.body as Api.SearchGameBody;
+        console.log(data);
 
         const db = Db.getInstance();
 
         if (!data.isPrivate) {
             console.log('Searching for active room');
 
-            const isUserOnActiveRoom = await db.query(`SELECT * FROM rooms WHERE isEnded=0 AND players LIKE '%${data.userId}%'`) as Api.Room[];
+            const isUserOnActiveRoom = await db.query(
+                `SELECT * FROM rooms WHERE isEnded=0 AND players LIKE '%${data.userId}%'`
+            ) as Api.Room[];
 
             if (isUserOnActiveRoom.length > 0) {
                 const players = isUserOnActiveRoom[0].players.split(',');

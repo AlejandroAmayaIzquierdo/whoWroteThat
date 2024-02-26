@@ -21,12 +21,14 @@ export class RoomManager {
                     socket.emit('joinedRoom',false);
                     
 
-                const isRoomCreated = this.rooms.find(e => e.getID() === roomID + "");
+                const isRoomCreated = this.rooms.find(e => e.getID() === roomID);
                 if(isRoomCreated){
+                    console.log('Room already created');
                     socket.join(isRoomCreated.getID());
                     isRoomCreated.join(user);
                     console.log(isRoomCreated);
                 }else{
+                    console.log('Room not created');
                     console.log(query[0].isPrivate);
                     this.createRoom(
                         socket,

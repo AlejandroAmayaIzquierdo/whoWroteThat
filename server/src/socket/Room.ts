@@ -30,15 +30,21 @@ export class Room {
 
     public join = async (user: Api.User) => {
         let userInfo = user;
-        let query = await Db.getInstance().query(`SELECT * FROM users WHERE id='${user.userId}'`) as Api.User[];
+        let query = await Db.getInstance().query(`
+            SELECT id as userId,userName,profilePic,profileName 
+            FROM users WHERE id='${user.userId}'`
+        ) as Api.User[];
         if(query.length > 0)
             userInfo = query[0];
-        if(this.playersInfo.length < this.maxPlayers && !this.playersInfo.find(e => e.userId === user.userId))
+        const isUserOnRoom = this.playersInfo.find(e => e.userId === user.userId);
+        if(this.playersInfo.length < this.maxPlayers && !isUserOnRoom)
             this.playersInfo.push(userInfo);
         Application.io.to(this.id).emit('joinedRoom',this.playersInfo);
 
         
         this.game.players = this.playersInfo;
+
+        console.log('User joined',this.playersInfo);
         
 
         if(!this.interval)

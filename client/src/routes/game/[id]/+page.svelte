@@ -71,7 +71,8 @@
 			userName: currentUser?.profileName ?? currentUser?.userName ?? currentUser?.userId ?? '',
 			private: true
 		} as unknown as Api.JoinRoomData;
-		// console.log(joinRoomData);
+		
+		console.log(joinRoomData);
 		socket.emit('joinRoom', joinRoomData);
 		toast.loading('Joining room...', { duration: 5000 });
 	});
