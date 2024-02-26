@@ -6,6 +6,7 @@
     import Icon from '@iconify/svelte';
     import Google from '@iconify/icons-bi/google';
     import Github from '@iconify/icons-bi/github';
+    import Twitch from '@iconify/icons-bi/twitch';
 	import type { PageData } from '../$types';
 	import Modal from '$lib/components/ui/Modal/Modal.svelte';
 	// import ProfileFill from '@iconify/icons-iconamoon/profile-fill';
@@ -15,7 +16,7 @@
 
     let userName = '';
 
-    let isModalOpen = true;
+    let isModalOpen = false;
 
     const handleFindAnonymousGame = async (isPrivate?: boolean) => {
         if(!userName)
@@ -90,6 +91,9 @@
                 </form>
                 <form class="auth-form" method="post" action="?/OAuthGithub">
                     <button class="text-5xl p-5" type="submit"><Icon icon={Github}/></button>
+                </form>
+                <form class="auth-form" method="post" action="?/OAuthTwitch">
+                    <button class="text-5xl p-5" type="submit"><Icon icon={Twitch}/></button>
                 </form>
             </div>
         </div>

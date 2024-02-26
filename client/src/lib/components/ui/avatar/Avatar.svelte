@@ -16,7 +16,7 @@
 
 <div class="relative inline-flex items-center justify-center overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600 shadow-lg" style="width: {width}px; height: {height}px;">
     {#if user?.profilePic}
-        <img src={user.profilePic} alt="profile" class="w-8 h-8 sm:w-12 sm:h-12 select-none rounded-full"/>
+        <img src={user.profilePic} alt="profile" class="w-full h-full select-none rounded-full"/>
     {:else if user?.userName && !user?.profilePic}
         <span class="font-medium text-gray-600 dark:text-gray-300">{handleGetUserInitials(user?.userName)}</span>
     {:else}

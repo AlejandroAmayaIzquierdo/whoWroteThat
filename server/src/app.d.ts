@@ -111,7 +111,7 @@ declare namespace Lucia {
 		state: string;
 		fresh: boolean;
 	}
-	type Providers = "id" | "google";
+	type Providers = "id" | "google" | "twitch" | "github";
 }
 
 /// <reference types="Api" />
@@ -134,6 +134,8 @@ declare namespace Api {
 		userName: string;
 		userId: string;
 		SocketId?: string;
+		profilePic?: string;
+		profileName?: string;
 	}
 
 	interface Room {
@@ -184,5 +186,22 @@ declare namespace Api {
 		token_type: string;
 		id_token: string;
 		expiry_date: number;
+	}
+
+	interface TwitchUser {
+		id: string;
+		login: string;
+		display_name: string;
+		type: string;
+		broadcaster_type: string;
+		description: string;
+		profile_image_url: string;
+		offline_image_url: string;
+		view_count: number;
+		created_at: string;
+	}
+	
+	interface TwitchUserData {
+		data: TwitchUser[];
 	}
 }

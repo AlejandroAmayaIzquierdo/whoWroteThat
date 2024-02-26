@@ -1,8 +1,8 @@
 ﻿import type { PageServerLoad } from './$types';
 import { OAuth2Client } from 'google-auth-library';
-import { SECRET_CLIENT_ID, SECRET_CLIENT_SECRET,GITHUB_CLIENT_ID,GITHUB_CLIENT_SECRET } from '$env/static/private';
+import { SECRET_CLIENT_ID, SECRET_CLIENT_SECRET,GITHUB_CLIENT_ID,GITHUB_CLIENT_SECRET,TWITCH_CLIENT_ID,TWITCH_CLIENT_SECRET } from '$env/static/private';
 import { redirect } from '@sveltejs/kit';
-import { GitHub, generateState } from "arctic";
+import { GitHub, generateState,Twitch } from "arctic";
 
 export const load: PageServerLoad = async ({locals}) => {
     return {
@@ -53,5 +53,30 @@ export const actions = {
         throw redirect(302, url.toString());
 
 
+    },
+    OAuthTwitch: async ({cookies}) => {
+        const redirecrUrl = 'http://localhost:5173/oauthTwitch';
+
+        const twitch = new Twitch(
+            TWITCH_CLIENT_ID,
+            TWITCH_CLIENT_SECRET,
+            redirecrUrl
+        );
+        const state = generateState();
+
+        const url = await twitch.createAuthorizationURL(state);
+
+        cookies.set(
+            'twitch_oauth_state', 
+            state, 
+            { 
+                path: '/', 
+                maxAge: 60*10, 
+                httpOnly: true,
+                sameSite: 'lax',
+            }
+        );
+        throw redirect(302, url.toString());
+        
     }
 }

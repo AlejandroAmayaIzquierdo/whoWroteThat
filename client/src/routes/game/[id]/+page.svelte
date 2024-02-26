@@ -17,7 +17,7 @@
 	const currentUser = data.user ?? $CurrentUser;
 
 	let gameData: Api.EmittedRoomData = {
-		players: [{ userId: currentUser?.userId ?? '', userName: currentUser?.profileName ?? currentUser?.userName ?? currentUser?.userId ?? ''}],
+		players: [{ userId: currentUser?.userId ?? '', userName: currentUser?.profileName ?? currentUser?.userName ?? currentUser?.userId ?? '', profileName: currentUser?.profileName ?? currentUser?.userName ?? currentUser?.userId ?? '', profilePic: currentUser?.profilePic ?? ''}],
 		gameData: {
 			state: 'create',
 			round: 1,

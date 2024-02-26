@@ -2,11 +2,6 @@
 import { User } from '../../services/user';
 import { redirect } from '@sveltejs/kit';
 
-// interface GitHubUser {
-// 	id: number;
-// 	login: string;
-// }
-
 export const GET = async (event: RequestEvent) => {
 	const code = event.url.searchParams.get("code");
 	const state = event.url.searchParams.get("state");

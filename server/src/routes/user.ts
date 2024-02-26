@@ -1,6 +1,6 @@
 ﻿import express from "express";
 import { AuthManager } from "../database/AuthManager.js";
-import { logInController, oauthController, oauthGitController, signupController } from "../controllers/userController.js";
+import { logInController, oauthController, oauthGitController, oauthTwitchController, signupController } from "../controllers/userController.js";
 import { Db } from "../database/dbConnection.js";
 
 const userRoute = express.Router();
@@ -45,6 +45,20 @@ userRoute.post('/oauthGit', async (req, res) => {
 		return res.status(202).send(response);
 	} catch (err) {
 		console.log(err);
+		// const error = err as Api.Error;
+		return res.status(500).send({ status: 0, error: `${err}` });
+	}
+});
+
+userRoute.post('/oauthTwitch', async (req, res) => {
+	try {
+		const session = await oauthTwitchController(req, res);
+		const response: Api.Response = {
+			status: 1,
+			result: session
+		}
+		return res.status(202).send(response);
+	} catch (err) {
 		// const error = err as Api.Error;
 		return res.status(500).send({ status: 0, error: `${err}` });
 	}

@@ -25,7 +25,9 @@ export const {
     BD_DATABASE_NAME,SECRET_CLIENT_ID,
     SECRET_CLIENT_SECRET,
     GITHUB_CLIENT_ID,
-    GITHUB_CLIENT_SECRET
+    GITHUB_CLIENT_SECRET,
+    TWITCH_CLIENT_ID,
+    TWITCH_CLIENT_SECRET
 } = process.env;
 
 export class Application {

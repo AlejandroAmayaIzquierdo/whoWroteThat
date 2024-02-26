@@ -11,6 +11,8 @@ export class SocketHandler {
 
             socket.on('joinRoom', async (data: Api.JoinRoomData) => {
                 console.log("RoomID: " + data.roomId);
+                if(RoomManager.isUserOnAnyRoom(data.userId))
+                    return;
                 RoomManager.joinRoom(socket,data.roomId,{userId: data.userId,userName: data.userName, SocketId: socket.id});
             });
 

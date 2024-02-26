@@ -49,6 +49,25 @@ export class User {
         return data.result as Api.Session;
     }
 
+    public static postOauthTwitch = async (code: string, state: string): Promise<Api.Session | null> => {
+        const resp = await fetch(`${VITE_APP_BASE_URL}/${MODULE}/oauthTwitch`, {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ code, state })
+        });
+
+        const data = await resp.json() as Api.StandardResp;
+        
+        if(data.status === 0){
+            return null;
+        }
+
+        return data.result as Api.Session;
+    }
+
     public static logout = async (token: string): Promise<boolean> => {
         const resp = await fetch(`${VITE_APP_BASE_URL}/${MODULE}/logout`, {
             method: "PUT",
