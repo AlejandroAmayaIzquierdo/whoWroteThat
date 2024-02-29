@@ -1,7 +1,7 @@
 ﻿<script lang="ts">
 	import { goto } from '$app/navigation';
 	import { setUser } from '$lib/stores/user';
-	import { searchGame } from '../../services/game';
+	import { joinGame, searchGame } from '../../services/game';
     import Account from '$lib/components/Game/Account.svelte';
     import Icon from '@iconify/svelte';
     import Google from '@iconify/icons-bi/google';
@@ -9,6 +9,7 @@
     import Twitch from '@iconify/icons-bi/twitch';
 	import type { PageData } from '../$types';
 	import Modal from '$lib/components/ui/Modal/Modal.svelte';
+	import { Toaster, toast } from 'svelte-sonner';
 	// import ProfileFill from '@iconify/icons-iconamoon/profile-fill';
 
     export let data: PageData;
@@ -39,8 +40,11 @@
         const userName = data.user?.profileName ?? data.user?.userName ?? data.user?.userId;
         const resp = await searchGame(data.user.userId,userName,isPrivate ?? false);
         console.log(resp);
-        if(resp.status === 0)
+        if(resp.status === 0) {
+            toast.error(`Error finding game`);
             return;
+        }
+            
         const {roomId} = resp.result as Api.searchGameResult;
 
         goto(`/game/${roomId}`);
@@ -50,11 +54,32 @@
         setUser(data.user);
     }
 
+    const handleJoinLobby = async (lobby: string) => {
+        if(!data.user?.userId) return;
+        const resp = await joinGame(lobby);
+        if(resp.status === 0) {
+            toast.error(`Error finding game '${resp.error}'`);
+            return;
+        }
+        const {roomId} = resp.result as Api.searchGameResult;
+
+        goto(`/game/${roomId}`);
+
+        setUser(data.user);
+    }
+
 
 
 </script>
 
-<Modal isOpen={isModalOpen} setIsOpen={(val) => isModalOpen = val } onCreateLobby={() => handleFindGame(true)} onJoinLobby={(lobby) => console.log(lobby)}/>
+<Toaster richColors />
+
+<Modal 
+    isOpen={isModalOpen} 
+    setIsOpen={(val) => isModalOpen = val } 
+    onCreateLobby={() => handleFindGame(true)} 
+    onJoinLobby={(lobby) => handleJoinLobby(lobby)}
+/>
 
 <div class="h-full w-full absolute top-0 left-0 mx-auto flex justify-center items-center">
     {#if data.user === null}
@@ -77,7 +102,7 @@
             <div class="flex w-1/2 justify-center items-center">
                 <button 
                 class="rounded-lg bg-blue-500 p-2 text-white w-full ml-5 mr-5"
-                on:click={() => isModalOpen = true}
+                on:click={() => toast.error('To play private you need to log in')}
             >
                 Private lobby
             </button>

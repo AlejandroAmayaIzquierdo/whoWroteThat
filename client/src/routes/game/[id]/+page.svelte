@@ -3,11 +3,11 @@
 	import type { PageData } from './$types';
 	import { onMount } from 'svelte';
 	import Game from '$lib/components/Game/Game.svelte';
-	import Lobby from '$lib/components/Game/Lobby.svelte';
+	import Lobby from '$lib/components/Game/Lobby/Lobby.svelte';
 	import { goto } from '$app/navigation';
 	import { CurrentUser } from '$lib/stores/user';
 	import Winners from '$lib/components/Game/Winners.svelte';
-	import Showcase from '$lib/components/Game/Showcase.svelte';
+	import Showcase from '$lib/components/Game/ShowCase/Showcase.svelte';
 	import { Toaster, toast } from 'svelte-sonner';
 
 	export let data: PageData;
@@ -62,8 +62,12 @@
 	});
 
 	onMount(() => {
-		if(!currentUser)
-		    goto(`/game`); //TODO when is not logged save session data on cookies.
+		console.log('Current user',currentUser);
+		if(!currentUser || currentUser === null || currentUser === undefined || currentUser?.userId === '' || currentUser?.userId === undefined || currentUser?.userId === null) {
+			goto(`/game`); //TODO when is not logged save session data on cookies.
+			return;
+		}
+		    
 		const joinRoomData = {
 			lang: 'es',
 			roomId: data.id,
