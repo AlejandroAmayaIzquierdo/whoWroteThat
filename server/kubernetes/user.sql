@@ -16,12 +16,17 @@ CREATE TABLE `user_key` (
 	`user_id` VARCHAR(60) NOT NULL COLLATE 'latin1_swedish_ci',
 	`hashed_password` VARCHAR(255) NULL DEFAULT NULL COLLATE 'latin1_swedish_ci',
 	`google_auth` TEXT NULL DEFAULT NULL COLLATE 'latin1_swedish_ci',
+	`github_id` TEXT NULL DEFAULT NULL COLLATE 'latin1_swedish_ci',
+	`github_auth` TEXT NULL DEFAULT NULL COLLATE 'latin1_swedish_ci',
+	`twitch_auth` TEXT NULL DEFAULT NULL COLLATE 'latin1_swedish_ci',
+	`twitch_id` TEXT NULL DEFAULT NULL COLLATE 'latin1_swedish_ci',
 	PRIMARY KEY (`id`) USING BTREE,
 	INDEX `user_id` (`user_id`) USING BTREE
 )
 COLLATE='latin1_swedish_ci'
 ENGINE=MyISAM
 ;
+
 
 
 CREATE TABLE `user_session` (
