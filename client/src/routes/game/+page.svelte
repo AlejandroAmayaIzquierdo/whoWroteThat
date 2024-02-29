@@ -10,6 +10,8 @@
 	import type { PageData } from '../$types';
 	import Modal from '$lib/components/ui/Modal/Modal.svelte';
 	import { Toaster, toast } from 'svelte-sonner';
+	import PopOver from '$lib/components/ui/Popover/PopOver.svelte';
+	import PrivateLobbyPopover from '$lib/components/Game/Lobby/PrivateLobbyPopover.svelte';
 	// import ProfileFill from '@iconify/icons-iconamoon/profile-fill';
 
     export let data: PageData;
@@ -69,17 +71,16 @@
     }
 
 
-
 </script>
 
 <Toaster richColors />
 
-<Modal 
+<!-- <Modal 
     isOpen={isModalOpen} 
     setIsOpen={(val) => isModalOpen = val } 
     onCreateLobby={() => handleFindGame(true)} 
     onJoinLobby={(lobby) => handleJoinLobby(lobby)}
-/>
+/> -->
 
 <div class="h-full w-full absolute top-0 left-0 mx-auto flex justify-center items-center">
     {#if data.user === null}
@@ -130,12 +131,7 @@
             >
                 Play
             </button>
-            <button 
-            class="rounded-lg bg-blue-500 p-2 text-white w-1/4 m-5"
-            on:click={() => isModalOpen = true}
-        >
-            Play Private
-        </button>
+            <PrivateLobbyPopover onCreateLobby={() => handleFindGame(true)} onJoinLobby={(value) => handleJoinLobby(value)} />
         </div>
         {#if data.user}
             <Account user={data.user}/>
