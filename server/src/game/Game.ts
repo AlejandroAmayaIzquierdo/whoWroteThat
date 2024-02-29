@@ -51,15 +51,21 @@ export class Game {
             this.showCasingUserIndex = 0;
             this.showCasingUser = this.players[this.showCasingUserIndex].userId;
         }
+        else if (this.state === "showcase" && this.showCasingUser === "general") {
+            this.round++;
+            this.timeLeft = this.TIME_BY_ROUND;
+            this.state = "create";
+            this.showCasingUserIndex = 0;
+            this.showCasingUser = this.players[this.showCasingUserIndex].userId;
+        }
         else if(this.state === "showcase" && this.round < this.MAX_ROUND_BY_GAME) {
+
             if(this.showCasingUserIndex >= this.players.length - 1) {
-                this.round++;
-                this.timeLeft = this.TIME_BY_ROUND;
-                this.state = "create";
-                this.showCasingUserIndex = 0;
-                this.showCasingUser = this.players[this.showCasingUserIndex].userId;
+                this.showCasingUser = "general";
+                this.timeLeft = this.TIME_SHOWCASE_BY_USER;
                 return;
             }
+
 
             this.showCasingUserIndex++;
             this.showCasingUser = this.players[this.showCasingUserIndex].userId;

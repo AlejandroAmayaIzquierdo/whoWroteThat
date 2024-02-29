@@ -1,5 +1,6 @@
-﻿<script lang="ts">
-	import Chat from './Chat/Chat.svelte';
+<script lang="ts">
+	import Chat from '../Chat/Chat.svelte';
+	import Overview from './Overview.svelte';
 
 	export let gameData: Api.EmittedRoomData;
 
@@ -9,14 +10,22 @@
 
 	export let isDisableVote = false;
 
+	$: isGeneral = gameData.gameData.showCasingUser === 'general';
+
+	$: {
+		console.log(isGeneral);
+	}
+
 	let actualData: App.UserGameData | null = null;
 	let isAnswer = false;
 
     $: {
         if (gameData && gameData.gameData) {
             const { round, showCasingUser, data } = gameData.gameData;
-            const roundData = data[showCasingUser][round];
-            actualData = roundData;
+			if (showCasingUser !== 'general') { 
+				const roundData = data[showCasingUser][round];
+            	actualData = roundData;
+			}
         } else {
             actualData = null;
         }
@@ -32,6 +41,9 @@
 </script>
 
 <div class="flex justify-center bg-gray-100">
+	{#if isGeneral}
+	<Overview gameData={gameData} />
+	{:else}
 	<div class="flex min-h-screen w-1/2 flex-col items-center justify-center p-10 text-gray-800">
 		{#if actualData}
 			<span class="text-4xl font-bold p-5"
@@ -95,4 +107,6 @@
 		</div>
 		<span>Time left {gameData.gameData.timeLeft}</span>
 	</div>
+	{/if}
+
 </div>

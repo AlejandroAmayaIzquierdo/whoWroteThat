@@ -16,6 +16,9 @@ declare namespace App {
 		profilePic?: string;
 		profileName?: string;
 	}
+	interface UserInGame extends User {
+		roundData: UserGameData;
+	}
 	interface Room {
 		roomId: number;
 		currentUsers: User[];
@@ -33,6 +36,7 @@ declare namespace App {
 	}
 
 	interface UserGameData {
+		score: number;
 		messages: Message[];
 		answer?: string;
 		vote: number;

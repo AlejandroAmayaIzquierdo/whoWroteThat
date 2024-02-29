@@ -1,7 +1,7 @@
-﻿<script lang="ts">
+<script lang="ts">
 	import { CurrentUser } from "$lib/stores/user";
-	import Avatar from "../ui/avatar/Avatar.svelte";
-	import SecretCode from "./Lobby/SecretCode.svelte";
+	import Avatar from "../../ui/avatar/Avatar.svelte";
+	import SecretCode from "./SecretCode.svelte";
 
     export let gameData: Api.EmittedRoomData | null;
 
