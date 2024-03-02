@@ -4,6 +4,7 @@ import { Db } from "../database/dbConnection.js";
 import { ResultSetHeader } from "mysql2";
 import crypto from "crypto";
 import { AuthManager } from "../database/AuthManager.js";
+import { Game } from "../game/Game.js";
 
 const gameRoute = express.Router();
 
@@ -63,15 +64,24 @@ gameRoute.post("/searchGame", async (req, res) => {
       )) as Api.Room[];
 
       if (isUserOnActiveRoom.length > 0) {
-        const players = isUserOnActiveRoom[0].players.split(",");
-        const response: Api.Response = {
-          status: 1,
-          result: {
-            roomId: isUserOnActiveRoom[0].id,
-            currentUsers: players,
-          },
-        };
-        return res.status(202).send(response);
+        const doesGameShouldEnd = await Game.doesGameShouldEnd(
+          isUserOnActiveRoom[0]
+        );
+        if (doesGameShouldEnd) {
+          await db.query(
+            `UPDATE rooms SET isActive=0,isEnded=1 WHERE id='${isUserOnActiveRoom[0].id}'`
+          );
+        } else {
+          const players = isUserOnActiveRoom[0].players.split(",");
+          const response: Api.Response = {
+            status: 1,
+            result: {
+              roomId: isUserOnActiveRoom[0].id,
+              currentUsers: players,
+            },
+          };
+          return res.status(202).send(response);
+        }
       }
 
       console.log("Searching for room");
