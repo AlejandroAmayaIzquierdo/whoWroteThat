@@ -45,12 +45,14 @@ CREATE TABLE `rooms` (
 	`isActive` BIT(1) NOT NULL,
 	`isEnded` BIT(1) NOT NULL,
 	`isPrivate` INT(11) NOT NULL DEFAULT '0',
+	`startedAt` VARCHAR(100) NULL DEFAULT NULL COLLATE 'latin1_swedish_ci',
 	`endedAt` VARCHAR(100) NULL DEFAULT NULL COLLATE 'latin1_swedish_ci',
 	`gameData` TEXT NULL DEFAULT NULL COLLATE 'latin1_swedish_ci',
 	`winnerUser` VARCHAR(50) NULL DEFAULT NULL COLLATE 'latin1_swedish_ci',
 	PRIMARY KEY (`id`) USING BTREE
 )
 COLLATE='latin1_swedish_ci';
+
 
 
 CREATE TABLE `cron_tasks` (
@@ -91,7 +93,9 @@ CREATE TABLE `storage` (
 )
 COLLATE='latin1_swedish_ci';
 
-INSERT INTO `cron_tasks` (`name`, `schedule`, `is_active`, `lastEnd`) VALUES ('SessionCron', '0 * * * *', 1, '2023-12-03 17:33:43');
+
+INSERT INTO `cron_tasks` (`id`, `name`, `schedule`, `is_active`, `lastEnd`) VALUES (1, 'SessionCron', '0 0 * * *', 1, '2024-03-02 17:00:00');
+INSERT INTO `cron_tasks` (`id`, `name`, `schedule`, `is_active`, `lastEnd`) VALUES (2, 'CloseGamesCron', '0 * * * *', 1, '2024-03-02 17:27:00');
 
 
 INSERT INTO `chats` (`id`, `pack`, `difficulty`) VALUES (1, 'initial', 1);

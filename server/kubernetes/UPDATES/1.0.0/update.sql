@@ -1,4 +1,5 @@
-﻿INSERT INTO `cron_tasks` (`name`, `schedule`, `is_active`, `lastEnd`) VALUES ('SessionCron', '0 * * * *', 1, '2023-12-03 17:33:43');
+﻿INSERT INTO `cron_tasks` (`id`, `name`, `schedule`, `is_active`, `lastEnd`) VALUES (1, 'SessionCron', '0 0 * * *', 1, '2024-03-02 17:00:00');
+INSERT INTO `cron_tasks` (`id`, `name`, `schedule`, `is_active`, `lastEnd`) VALUES (2, 'CloseGamesCron', '0 * * * *', 1, '2024-03-02 17:27:00');
 
 
 INSERT INTO `chats` (`id`, `pack`, `difficulty`) VALUES (1, 'initial', 1);

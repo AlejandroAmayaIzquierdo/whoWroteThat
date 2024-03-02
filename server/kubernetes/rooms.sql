@@ -5,6 +5,7 @@
 	`isActive` BIT(1) NOT NULL,
 	`isEnded` BIT(1) NOT NULL,
 	`isPrivate` INT(11) NOT NULL DEFAULT '0',
+	`startedAt` VARCHAR(100) NULL DEFAULT NULL COLLATE 'latin1_swedish_ci',
 	`endedAt` VARCHAR(100) NULL DEFAULT NULL COLLATE 'latin1_swedish_ci',
 	`gameData` TEXT NULL DEFAULT NULL COLLATE 'latin1_swedish_ci',
 	`winnerUser` VARCHAR(50) NULL DEFAULT NULL COLLATE 'latin1_swedish_ci',
