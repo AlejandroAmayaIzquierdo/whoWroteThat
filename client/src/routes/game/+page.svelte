@@ -75,13 +75,6 @@
 
 <Toaster richColors />
 
-<!-- <Modal 
-    isOpen={isModalOpen} 
-    setIsOpen={(val) => isModalOpen = val } 
-    onCreateLobby={() => handleFindGame(true)} 
-    onJoinLobby={(lobby) => handleJoinLobby(lobby)}
-/> -->
-
 <div class="h-full w-full absolute top-0 left-0 mx-auto flex justify-center items-center">
     {#if data.user === null}
         <div class="flex flex-col items-center justify-center w-screen bg-gray-100 min-h-screen text-gray-800 p-10">

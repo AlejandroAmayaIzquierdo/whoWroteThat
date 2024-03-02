@@ -90,6 +90,7 @@ declare namespace Api {
 		done: boolean;
 		timeLeft: number;
 		showCasingUser: string;
+		winner: string;
 	}
 
 	interface EmittedRoomData {
