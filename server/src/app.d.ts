@@ -143,6 +143,7 @@ declare namespace Api {
     isActive: number;
     isEnded: number;
     startedAt: string;
+    createdAt: string;
     endedAt: string;
     isPrivate: number;
   }

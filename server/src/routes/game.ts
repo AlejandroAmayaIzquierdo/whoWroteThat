@@ -5,6 +5,11 @@ import { ResultSetHeader } from "mysql2";
 import crypto from "crypto";
 import { AuthManager } from "../database/AuthManager.js";
 import { Game } from "../game/Game.js";
+import {
+  createRoom,
+  searchActiveRoom,
+  searchRoom,
+} from "../controllers/GameController.js";
 
 const gameRoute = express.Router();
 
@@ -57,80 +62,45 @@ gameRoute.post("/searchGame", async (req, res) => {
     const db = Db.getInstance();
 
     if (!data.isPrivate) {
+      //Search for active room.
       console.log("Searching for active room");
 
-      const isUserOnActiveRoom = (await db.query(
-        `SELECT * FROM rooms WHERE isEnded=0 AND players LIKE '%${data.userId}%'`
-      )) as Api.Room[];
+      const activeRoom = await searchActiveRoom(db, data);
 
-      if (isUserOnActiveRoom.length > 0) {
-        const doesGameShouldEnd = await Game.doesGameShouldEnd(
-          isUserOnActiveRoom[0]
-        );
-        if (doesGameShouldEnd) {
-          await db.query(
-            `UPDATE rooms SET isActive=0,isEnded=1 WHERE id='${isUserOnActiveRoom[0].id}'`
-          );
-        } else {
-          const players = isUserOnActiveRoom[0].players.split(",");
-          const response: Api.Response = {
-            status: 1,
-            result: {
-              roomId: isUserOnActiveRoom[0].id,
-              currentUsers: players,
-            },
-          };
-          return res.status(202).send(response);
-        }
+      if (activeRoom) {
+        const response: Api.Response = {
+          status: 1,
+          result: {
+            roomId: activeRoom.roomId,
+            currentUsers: activeRoom.currentUsers,
+          },
+        };
+        return res.status(202).send(response);
       }
 
       console.log("Searching for room");
 
       //Search for room.
-      const activeRooms = (await db.query(
-        `SELECT * FROM rooms WHERE isActive=0 AND isEnded=0 AND isPrivate=0`
-      )) as Api.Room[];
-      console.log("Searching for room");
-      if (activeRooms.length > 0) {
-        //TODO add like search algoritm to play with similar users level
-
-        const players = activeRooms[0].players.split(",");
-        if (!players.find((e) => e === data.userId)) {
-          players.push(data.userId);
-          await Db.getInstance().query(
-            `UPDATE rooms SET players="${players.join(
-              ","
-            )}",isActive=1 WHERE id='${activeRooms[0].id} AND isPrivate=0'`
-          );
-        }
+      const sRoom = await searchRoom(db, data);
+      if (sRoom) {
         const response: Api.Response = {
           status: 1,
           result: {
-            roomId: activeRooms[0].id,
-            currentUsers: players,
+            roomId: sRoom.roomId,
+            currentUsers: sRoom.currentUsers,
           },
         };
         return res.status(202).send(response);
       }
     }
-
-    console.log("Creating room");
-
     //Create room.
-    const hash = crypto.createHash("sha256");
-
-    hash.update(data.userId.toString() + new Date().getTime());
-
-    const roomId = hash.digest("base64url");
-    const isPrivate = data.isPrivate ? "1" : "0";
-
-    (await db.query(
-      `INSERT INTO rooms (id,players,maxUsers,isActive,isEnded,isPrivate) VALUES ("${roomId}","${data.userId}",2,0,0,${isPrivate});`
-    )) as ResultSetHeader;
+    console.log("Creating room");
+    const rCreated = await createRoom(db, data);
+    if (!rCreated) throw new Error("Error creating room");
     const response: Api.Response = {
       status: 1,
       result: {
-        roomId: roomId,
+        roomId: rCreated.roomId,
         currentUsers: [data.userId],
       },
     };

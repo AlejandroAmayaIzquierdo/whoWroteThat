@@ -1,5 +1,6 @@
 import { Db } from "../database/dbConnection";
 import { Game } from "../game/Game";
+import { Room } from "../socket/Room";
 
 export class CloseGamesCron implements App.CronTask {
   public handle = async () => {
@@ -10,7 +11,9 @@ export class CloseGamesCron implements App.CronTask {
     )) as Api.Room[];
     for await (const room of data) {
       const doesGameShouldEnd = await Game.doesGameShouldEnd(room);
-      if (doesGameShouldEnd) {
+      const doesRoomShouldEnd = await Room.doesRoomShouldEnd(room);
+
+      if (doesGameShouldEnd || doesRoomShouldEnd) {
         await db.query(
           `UPDATE rooms SET isActive=0,isEnded=1 WHERE id='${room.id}'`
         );

@@ -109,39 +109,52 @@ export class Game {
   public static doesGameShouldEndByID = async (
     roomID: string
   ): Promise<boolean> => {
-    const db = Db.getInstance();
-    const room = (await db.query(
-      `SELECT * FROM rooms WHERE id='${roomID}' AND isActive=1`
-    )) as Api.Room[];
-    console.log(room);
-    if (room.length === 0) return true;
-    const { startedAt, maxUsers } = room[0];
+    try {
+      const db = Db.getInstance();
+      const room = (await db.query(
+        `SELECT * FROM rooms WHERE id='${roomID}' AND isActive=1`
+      )) as Api.Room[];
+      console.log(room);
+      if (room.length === 0) return true;
+      const { startedAt, maxUsers } = room[0];
 
-    const now = new Date();
-    const startDate = new Date(startedAt);
-    const diff = now.getTime() - startDate.getTime();
-    const seconds = diff / 1000;
-    const alTimeByRound = this.TIME_BY_ROUND * Game.MAX_ROUND_BY_GAME;
-    const allTimeByShowcase =
-      this.TIME_SHOWCASE_BY_USER * maxUsers + this.TIME_SHOWCASE_BY_USER;
-    const maxSecondsOfGame = alTimeByRound + allTimeByShowcase + 30;
-    return seconds > maxSecondsOfGame;
+      const now = new Date();
+      const startDate = new Date(startedAt);
+      const diff = now.getTime() - startDate.getTime();
+      const seconds = diff / 1000;
+      const alTimeByRound = this.TIME_BY_ROUND * Game.MAX_ROUND_BY_GAME;
+      const allTimeByShowcase =
+        this.TIME_SHOWCASE_BY_USER * maxUsers + this.TIME_SHOWCASE_BY_USER;
+      const maxSecondsOfGame = alTimeByRound + allTimeByShowcase + 30;
+      return seconds > maxSecondsOfGame;
+    } catch (err) {
+      return true;
+    }
   };
 
   public static doesGameShouldEnd = async (
     room: Api.Room
   ): Promise<boolean> => {
-    const { startedAt, maxUsers } = room;
+    try {
+      const { startedAt, maxUsers } = room;
 
-    const now = new Date();
-    const startDate = new Date(startedAt);
-    const diff = now.getTime() - startDate.getTime();
-    const seconds = diff / 1000;
-    const alTimeByRound = this.TIME_BY_ROUND * Game.MAX_ROUND_BY_GAME;
-    const allTimeByShowcase =
-      this.TIME_SHOWCASE_BY_USER * maxUsers + this.TIME_SHOWCASE_BY_USER;
-    const maxSecondsOfGame = alTimeByRound + allTimeByShowcase + 30;
-    return seconds > maxSecondsOfGame;
+      console.log(room);
+
+      const now = new Date();
+      const startDate = new Date(startedAt);
+      const diff = now.getTime() - startDate.getTime();
+      const seconds = diff / 1000;
+      const alTimeByRound = this.TIME_BY_ROUND * Game.MAX_ROUND_BY_GAME;
+      const showCaseTimeRound =
+        this.TIME_SHOWCASE_BY_USER * maxUsers + this.TIME_SHOWCASE_BY_USER;
+      const allShowCaseTime = showCaseTimeRound * Game.MAX_ROUND_BY_GAME;
+      const maxSecondsOfGame = alTimeByRound + allShowCaseTime + 30;
+      console.log("Seconds", seconds);
+      console.log("Max", maxSecondsOfGame);
+      return seconds > maxSecondsOfGame;
+    } catch (err) {
+      return true;
+    }
   };
 
   public setAnswer = (userID: string, answer: string) => {

@@ -16,6 +16,8 @@ export class Room {
 
   private isPrivate: boolean = false;
 
+  public static readonly MAX_TIME_BY_GAME: number = 1800; // 30 minutes
+
   public constructor(
     roomID: string,
     maxUsers?: number,
@@ -43,7 +45,7 @@ export class Room {
 
     this.game.players = this.playersInfo;
 
-    console.log("User joined", this.playersInfo);
+    console.log("User joined", user.userId);
 
     if (!this.interval) this.handle();
 
@@ -65,6 +67,7 @@ export class Room {
     console.log("User left", user.userId);
     this.playersInfo = this.playersInfo.filter((e) => e.userId !== user.userId);
     Application.io.to(this.id).emit("leavedRoom", user);
+    console.log("User length", this.playersInfo.length);
     if (this.playersInfo.length <= 1) this.done();
   };
 
@@ -78,13 +81,11 @@ export class Room {
         }, 10000);
       }
 
-      Application.io
-        .to(this.id)
-        .emit("updateRoom", {
-          gameData: this.game.getGameData(),
-          players: this.playersInfo,
-          isPrivate: this.isPrivate,
-        });
+      Application.io.to(this.id).emit("updateRoom", {
+        gameData: this.game.getGameData(),
+        players: this.playersInfo,
+        isPrivate: this.isPrivate,
+      });
     }, 1000);
   };
 
@@ -102,6 +103,22 @@ export class Room {
       }"`
     );
     RoomManager.removeRoom(this.id);
+  };
+
+  public static doesRoomShouldEnd = async (
+    room: Api.Room
+  ): Promise<boolean> => {
+    try {
+      const { createdAt } = room;
+
+      const now = new Date();
+      const startDate = new Date(createdAt);
+      const diff = now.getTime() - startDate.getTime();
+      const seconds = diff / 1000;
+      return seconds > Room.MAX_TIME_BY_GAME;
+    } catch (err) {
+      return true;
+    }
   };
 
   public getID = () => this.id;
