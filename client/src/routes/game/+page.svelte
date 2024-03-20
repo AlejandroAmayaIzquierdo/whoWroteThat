@@ -80,8 +80,7 @@
         Who whrote That!
     </h1>
     {#if data.user === null}
-        <div class="flex flex-col items-center justify-center w-screen min-h-screen text-gray-800 p-10">
-            <h1 class="text-4xl font-bold mb-10">Who wrote that</h1>
+        <div class="flex flex-col items-center justify-center w-screen text-gray-800 p-10">
             <div class="flex w-1/2 justify-center items-center pl-5 pr-5 pb-2">
                 <input 
                     type="text" 
@@ -105,17 +104,17 @@
             </button>
             </div>
             <div class="pt-20">
-                <span class="font-bold m-5">Log in</span>
+                <span class="font-bold m-5 text-blue-500">Log in</span>
             </div>
             <div class="flex justify-center">
                 <form class="auth-form" method="post" action="?/OAuth2Google">
-                    <button class="text-5xl p-5" type="submit"><Icon icon={Google}/></button>
+                    <button class="text-5xl p-5 text-blue-500" type="submit"><Icon icon={Google}/></button>
                 </form>
                 <form class="auth-form" method="post" action="?/OAuthGithub">
-                    <button class="text-5xl p-5" type="submit"><Icon icon={Github}/></button>
+                    <button class="text-5xl p-5 text-blue-500" type="submit"><Icon icon={Github}/></button>
                 </form>
                 <form class="auth-form" method="post" action="?/OAuthTwitch">
-                    <button class="text-5xl p-5" type="submit"><Icon icon={Twitch}/></button>
+                    <button class="text-5xl p-5 text-blue-500" type="submit"><Icon icon={Twitch}/></button>
                 </form>
             </div>
         </div>
