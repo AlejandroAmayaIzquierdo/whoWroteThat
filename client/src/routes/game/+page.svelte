@@ -75,9 +75,12 @@
 
 <Toaster richColors />
 
-<div class="h-full w-full absolute top-0 left-0 mx-auto flex justify-center items-center">
+<div class="h-full w-full absolute top-0 left-0 mx-auto flex flex-col justify-between items-center">
+    <h1 class="text-6xl font-extrabold text-blue-400 uppercase drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] pt-60">
+        Who whrote That!
+    </h1>
     {#if data.user === null}
-        <div class="flex flex-col items-center justify-center w-screen bg-gray-100 min-h-screen text-gray-800 p-10">
+        <div class="flex flex-col items-center justify-center w-screen min-h-screen text-gray-800 p-10">
             <h1 class="text-4xl font-bold mb-10">Who wrote that</h1>
             <div class="flex w-1/2 justify-center items-center pl-5 pr-5 pb-2">
                 <input 
@@ -116,16 +119,20 @@
                 </form>
             </div>
         </div>
-        {:else}
-        <div class="flex p-10 w-1/2 justify-center items-center">
-            <button 
-                class="rounded-lg bg-blue-500 p-2 text-white w-1/4 m-5"
-                on:click={() => handleFindGame(false)}
-            >
-                Play
-            </button>
-            <PrivateLobbyPopover onCreateLobby={() => handleFindGame(true)} onJoinLobby={(value) => handleJoinLobby(value)} />
-        </div>
+    {:else}
+    <div class="flex p-10 w-1/2 h-1/2 justify-center items-end gap-40">
+        <button 
+            class="inline-flex items-center justify-center rounded-xl bg-white px-4 py-3
+            font-medium leading-none text-blue-400 shadow-md hover:opacity-75 w-1/3 hover:brightness-[1.01] active:scale-90 transition-all active:brightness-[0.99]"
+            on:click={() => handleFindGame(false)}
+        >
+            Play
+        </button>
+        <div
+        class="inline-block h-[100%] w-0.5 self-stretch bg-blue-300 dark:bg-white/10"></div>
+        <PrivateLobbyPopover onCreateLobby={() => handleFindGame(true)} onJoinLobby={(value) => handleJoinLobby(value)} />
+    </div>
+
         {#if data.user}
             <Account user={data.user}/>
         {/if}

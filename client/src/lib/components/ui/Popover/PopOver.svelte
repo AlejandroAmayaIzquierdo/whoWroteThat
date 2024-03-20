@@ -1,8 +1,9 @@
 <script lang="ts">
-	import Icon from '@iconify/svelte';
     import { createPopover, melt } from '@melt-ui/svelte';
 
     export let placement: 'top' | 'right' | 'bottom' | 'left' = 'top';
+
+    export let offSet: number = 10;
 
     import { fade } from 'svelte/transition';
   
@@ -12,7 +13,8 @@
     } = createPopover({
       forceVisible: true,
       positioning: {
-        placement
+        placement,
+        gutter: offSet
       },
     });
 
