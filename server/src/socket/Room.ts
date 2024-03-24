@@ -16,7 +16,13 @@ export class Room {
 
   private isPrivate: boolean = false;
 
+  private createdAt: Date;
+
   public static readonly MAX_TIME_BY_GAME: number = 1800; // 30 minutes
+
+  public static readonly MAX_TIME_BEFORE_START: number = 120;
+
+  private isClosingGame: boolean = false;
 
   public constructor(
     roomID: string,
@@ -30,6 +36,8 @@ export class Room {
     if (players) this.playersInfo = [...this.playersInfo, ...players];
     this.game = new Game(this.playersInfo);
     this.isPrivate = isPrivate || false;
+
+    this.createdAt = new Date();
   }
 
   public join = async (user: Api.User) => {
@@ -75,7 +83,7 @@ export class Room {
     this.interval = setInterval(async () => {
       if (this.game.getGameData().started) this.game.update();
 
-      if (this.game.getGameData().done) {
+      if (this.game.getGameData().done || this.doesRoomShouldClose()) {
         setTimeout(() => {
           this.done();
         }, 10000);
@@ -89,8 +97,16 @@ export class Room {
     }, 1000);
   };
 
+  public shouldCloseRoom = () => {};
+
   public done = async () => {
+    if (this.isClosingGame) return;
+
+    this.isClosingGame = true;
     if (this.interval) clearInterval(this.interval);
+    Application.io
+      .to(this.id)
+      .emit("toast", "Game Ended. How you have fun. 😃");
     const now = new Date();
     const formattedDate = now.toISOString().slice(0, 19).replace("T", " ");
     await Db.getInstance().query(
@@ -116,6 +132,21 @@ export class Room {
       const diff = now.getTime() - startDate.getTime();
       const seconds = diff / 1000;
       return seconds > Room.MAX_TIME_BY_GAME;
+    } catch (err) {
+      return true;
+    }
+  };
+
+  public doesRoomShouldClose = (): boolean => {
+    try {
+      if (this.getGame().getGameData().started) return false;
+
+      const now = new Date();
+      const startDate = new Date(this.createdAt);
+      const diff = now.getTime() - startDate.getTime();
+      const seconds = diff / 1000;
+
+      return seconds > Room.MAX_TIME_BEFORE_START;
     } catch (err) {
       return true;
     }
