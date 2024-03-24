@@ -12,7 +12,7 @@
 </script>
 
 
-<ul class="flex flex-col justify-center items-center bg-gray-100 min-h-screen gap-10 w-full">
+<ul class="flex flex-col justify-center items-center  min-h-screen gap-10 w-full">
    {#if showWinner && winnerUser !== null}
    <Card class="w-1/2 h-1/2 p-10 divide-gray-200 dark:divide-gray-700 divide-y flex flex-col justify-center items-center">
       <CardTitle class="pb-5">Winner</CardTitle>

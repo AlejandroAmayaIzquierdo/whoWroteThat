@@ -9,7 +9,7 @@
 
 		--backgroundSquareColor: white;
 		--squareColor: #e6f6ff;
-		--squareSize: 2.5em;
+		--squareSize: 4.5em;
 
 		--muted: 210 40% 96.1%;
 		--muted-foreground: 215.4 16.3% 46.9%;
@@ -80,17 +80,31 @@
 
 	.checkered {
 		background-color: var(--backgroundSquareColor);
-		background-image: linear-gradient(45deg, var(--squareColor) 25%, transparent 25%),
-			linear-gradient(135deg, var(--squareColor) 25%, transparent 25%),
-			linear-gradient(45deg, transparent 75%, var(--squareColor) 75%),
-			linear-gradient(135deg, transparent 75%, var(--squareColor) 75%);
-		background-position:
-			0 0,
-			var(--squareSize) 0,
-			var(--squareSize) calc(-1 * var(--squareSize)),
-			0 calc(-1 * var(--squareSize));
-		background-size: calc(2 * var(--squareSize)) calc(2 * var(--squareSize));
+		background: 
+		repeating-conic-gradient(var(--squareColor) 0% 25%, transparent 0% 50%) 
+		  50% / 20px 20px;
+		background-position: 0 0;
+		background-size: calc(1.5 * var(--squareSize)) calc(1.5 * var(--squareSize));
 	}
+
+	.checkeredAnimated {
+		background-color: var(--backgroundSquareColor);
+		background: 
+		repeating-conic-gradient(var(--squareColor) 0% 25%, transparent 0% 50%) 
+		  50% / 20px 20px;
+		background-position: 0 0;
+		background-size: calc(1.5 * var(--squareSize)) calc(1.5 * var(--squareSize));
+		animation: slide 10s linear infinite;
+	}
+
+	@keyframes slide {
+    0% {
+		background-position: 0 0;
+    }
+    100% {
+		background-position: calc(1.5 * var(--squareSize)) 0;
+    }
+}
 }
 
 @layer base {

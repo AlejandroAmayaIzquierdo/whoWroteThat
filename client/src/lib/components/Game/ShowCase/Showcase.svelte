@@ -42,7 +42,7 @@
 	}
 </script>
 
-<div class="flex justify-center bg-gray-100">
+<div class="flex justify-center">
 	{#if isGeneral}
 	<Overview gameData={gameData} />
 	{:else}

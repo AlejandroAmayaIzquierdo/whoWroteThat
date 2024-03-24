@@ -8,25 +8,31 @@
     import Github from '@iconify/icons-bi/github';
     import Twitch from '@iconify/icons-bi/twitch';
 	import type { PageData } from '../$types';
-	import Modal from '$lib/components/ui/Modal/Modal.svelte';
 	import { Toaster, toast } from 'svelte-sonner';
-	import PopOver from '$lib/components/ui/Popover/PopOver.svelte';
 	import PrivateLobbyPopover from '$lib/components/Game/Lobby/PrivateLobbyPopover.svelte';
-	// import ProfileFill from '@iconify/icons-iconamoon/profile-fill';
 
     export let data: PageData;
 
 
     let userName = '';
 
-    let isModalOpen = false;
+    const MIN_WIDTH_MOBILE = 800;
+    
+
+    $: innerWidth = 0
+    $: innerHeight = 0
+
+    $: {
+        if (innerWidth < MIN_WIDTH_MOBILE) {
+            toast.info('The game its better played on desktop')
+        }
+    }
 
     const handleFindAnonymousGame = async (isPrivate?: boolean) => {
         if(!userName)
             return;
         const userId = `${userName}-${Math.random().toString(36).substring(2,9)}`;
         const resp = await searchGame(`${userName}-${Math.random().toString(36).substring(2,9)}`,userName,isPrivate ?? false);
-        console.log(resp);
         if(resp.status === 0)
             return;
         const {roomId} = resp.result as Api.searchGameResult;
@@ -41,7 +47,6 @@
         console.log(data.user.profileName)
         const userName = data.user?.profileName ?? data.user?.userName ?? data.user?.userId;
         const resp = await searchGame(data.user.userId,userName,isPrivate ?? false);
-        console.log(resp);
         if(resp.status === 0) {
             toast.error(`Error finding game`);
             return;
@@ -73,15 +78,19 @@
 
 </script>
 
+<svelte:window bind:innerWidth bind:innerHeight/>
+
 <Toaster richColors />
 
-<div class="h-full w-full absolute top-0 left-0 mx-auto flex flex-col justify-between items-center">
-    <h1 class="text-6xl font-extrabold text-blue-400 uppercase drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] pt-60">
+<div class="h-full w-full absolute top-0 left-0 mx-auto flex flex-col justify-between items-center checkeredAnimated">
+    <h1 class="text-6xl font-extrabold text-blue-400 
+        uppercase drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] pt-20 pb-10
+        text-center">
         Who whrote That!
     </h1>
     {#if data.user === null}
-        <div class="flex flex-col items-center justify-center w-screen text-gray-800 p-10">
-            <div class="flex w-1/2 justify-center items-center pl-5 pr-5 pb-2">
+        <div class="flex flex-col items-center justify-center w-screen h-full text-gray-800">
+            <div class="flex w-full max-w-screen-sm justify-center items-center pl-5 pr-5 pb-2">
                 <input 
                     type="text" 
                     class="rounded-lg border p-2 w-full" 
@@ -95,7 +104,7 @@
                     Play
                 </button>
             </div>
-            <div class="flex w-1/2 justify-center items-center">
+            <div class="flex w-full max-w-screen-sm justify-center items-center">
                 <button 
                 class="rounded-lg bg-blue-500 p-2 text-white w-full ml-5 mr-5"
                 on:click={() => toast.error('To play private you need to log in')}
@@ -119,16 +128,18 @@
             </div>
         </div>
     {:else}
-    <div class="flex p-10 w-1/2 h-1/2 justify-center items-end gap-40">
+    <div class="flex w-full h-1/2 p-5 {innerWidth <= MIN_WIDTH_MOBILE ? 'flex-col gap-20 items-center' : 'flex-row gap-40 items-end'}  justify-center content-center"  >
         <button 
             class="inline-flex items-center justify-center rounded-xl bg-white px-4 py-3
-            font-medium leading-none text-blue-400 shadow-md hover:opacity-75 w-1/3 hover:brightness-[1.01] active:scale-90 transition-all active:brightness-[0.99]"
+            font-medium leading-none text-blue-400 shadow-md hover:opacity-75 w-full 
+            hover:brightness-[1.01] active:scale-90 transition-all active:brightness-[0.99]"
             on:click={() => handleFindGame(false)}
         >
             Play
         </button>
-        <div
-        class="inline-block h-[100%] w-0.5 self-stretch bg-blue-300 dark:bg-white/10"></div>
+        {#if innerWidth > MIN_WIDTH_MOBILE}
+        <div class="inline-block h-[100%] w-2 min-w-2 rounded-sm self-stretch bg-blue-300 dark:bg-white/10"></div>
+        {/if}
         <PrivateLobbyPopover onCreateLobby={() => handleFindGame(true)} onJoinLobby={(value) => handleJoinLobby(value)} />
     </div>
 

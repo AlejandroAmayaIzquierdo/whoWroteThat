@@ -13,18 +13,18 @@
 </script>
 
 
-<div class="flex flex-row flex-wrap justify-center bg-gray-100 min-h-screen">
+<div class="flex flex-row flex-wrap justify-center  min-h-screen checkered">
     <div class="flex flex-col items-center justify-start w-1/2  text-gray-800 p-10">
-        <h1 class="text-4xl font-bold">Lobby</h1>
+        <h1 class="text-4xl font-bold text-blue-400">Lobby</h1>
         <div class="flex flex-col items-center justify-center w-full text-gray-800">
-            <span>Players</span>
-            <span>{gameData ? gameData.players.length : 0}/2</span>
+            <span class="text-blue-400 font-bold">Players</span>
+            <span class="text-blue-500 ">{gameData ? gameData.players.length : 0}/2</span>
             <div class="flex flex-row items-center flex-wrap justify-center w-full h-full text-gray-800 rounded-2xl shadow-sm bg-white mt-5">
                 {#if gameData !== null && gameData.players.length > 0}
                     {#each gameData.players as player}
                         <div class="flex flex-col items-center justify-center p-5">
                             <Avatar user={player} height={100} width={100}/>
-                            <span style="margin-top: 5px;">{player.userName} {player.userId === $CurrentUser?.userId ? "(you)" : ""}</span>
+                            <span style="margin-top: 5px;" class="text-blue-400">{player.userName} {player.userId === $CurrentUser?.userId ? "(you)" : ""}</span>
                         </div>
                     {/each}
                 {/if}

@@ -11,7 +11,7 @@
 <PopOver 
     buttonText="Play Private"
     classButton="inline-flex items-center justify-center rounded-xl bg-white px-4 py-3
-    font-medium leading-none text-blue-400 shadow-md hover:opacity-75 w-1/3 active:scale-90 transition-all active:brightness-[0.99]"
+    font-medium leading-none text-blue-400 shadow-md hover:opacity-75 w-full active:scale-90 transition-all active:brightness-[0.99]"
     classContent="w-100 rounded-[4px] backdrop-blur-xl backdrop-opacity-85 p-5 shadow-lg h-[300px]"
     offSet={50}
 >

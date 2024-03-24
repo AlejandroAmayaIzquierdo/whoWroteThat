@@ -61,6 +61,10 @@
 		}, 3000);
 	});
 
+	socket.on('toast', (msg) => {
+		toast.message(msg);
+	});
+
 	onMount(() => {
 		console.log('Current user',currentUser);
 		if(!currentUser || currentUser === null || currentUser === undefined || currentUser?.userId === '' || currentUser?.userId === undefined || currentUser?.userId === null) {
@@ -98,7 +102,6 @@
 			answer
 		};
 		socket.emit('onSendMessage', answerData);
-
 	}
 
 	$: isMyShowCase = gameData.gameData.showCasingUser === currentUser?.userId;

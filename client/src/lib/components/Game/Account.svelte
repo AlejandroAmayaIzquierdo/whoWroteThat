@@ -14,10 +14,11 @@
         try {
             await User.logout(Cookies.getCookie('auth') ?? '');
             Cookies.eraseCookie('auth');
+            console.log('hola');
         } catch (error) {
             Cookies.eraseCookie('auth');
         }
-        goto('/game', { replaceState: true });
+        goto('/');
 
     }
 </script>
